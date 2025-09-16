@@ -19,10 +19,14 @@
  * 
  * Após essa configuração deverá rodar o seguinte comando:
  *  1) npx prisma migrate dev (tomar cuidado: acontece um reset no banco)
+ *  2) npx prisma generate
  * 
  * Para criptografar as senhas e palavras chaves deve-se instalar o bcrypt:
  *      npm install bcrypt (o import dessa biblioteca deve ser feito na controler de usuários)
  ***********************************************************************************************/
+
+
+// require('dotenv').config();
 
 // import das bibliotecas para criar api
 const cors = require('cors')
@@ -46,3 +50,37 @@ app.use((request, response, next) => {
 })
 
 // ligação com as pastas da controller
+const controllerUsuarios = require('./controller/usuarios/controllerUsuario')
+const controllerOngs = require('./controller/ongs/controllerOngs')
+
+////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
+
+app.post('/v1/controle-alimentos/usuario', cors(), bodyParserJSON, async function (request, response){
+     //recebe o content type da requisição
+     let contentType = request.headers['content-type']
+
+     //recebe do body da requisição os dados encaminhados
+     let dadosBody = request.body
+     let resultUsuario = await controllerUsuarios.inserirUsuario(dadosBody, contentType)
+ 
+     response.status(resultUsuario.status_code)
+     response.json(resultUsuario)
+})
+
+////////////////////////////////////////////////////ONGS//////////////////////////////////////////////////////////////////
+
+app.post('/v1/controle-alimentos/ong', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let resultOng = await controllerOngs.inserirOng(dadosBody, contentType)
+
+    response.status(resultOng.status_code)
+    response.json(resultOng)
+})
+
+app.listen('8080', function(){
+    console.log('API funcionando e aguardadndo requisições')
+})
