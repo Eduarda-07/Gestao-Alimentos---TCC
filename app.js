@@ -97,7 +97,19 @@ app.post('/v1/mesa_plus/ong', cors(), bodyParserJSON, async function (request, r
     response.json(resultOng)
 })
 
+///////////////////////////////////////////////////////LOGIN///////////////////////////////////////////////////////////////////
 
+app.post('/v1/mesa_plus/login', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerLogin.loginUsuario(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
