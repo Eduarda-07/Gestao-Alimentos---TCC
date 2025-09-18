@@ -52,10 +52,12 @@ app.use((request, response, next) => {
 // ligação com as pastas da controller
 const controllerUsuarios = require('./controller/usuarios/controllerUsuario')
 const controllerOngs = require('./controller/ongs/controllerOngs')
+const controllerEmpresa = require('./controller/empresas/controllerEmpresa')
+const controllerLogin = require('./controller/login/login')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
-app.post('/v1/controle-alimentos/usuario', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa_plus/usuario', cors(), bodyParserJSON, async function (request, response){
      //recebe o content type da requisição
      let contentType = request.headers['content-type']
 
@@ -67,9 +69,23 @@ app.post('/v1/controle-alimentos/usuario', cors(), bodyParserJSON, async functio
      response.json(resultUsuario)
 })
 
-////////////////////////////////////////////////////ONGS//////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////EMPRESAS//////////////////////////////////////////////////////////////////
 
-app.post('/v1/controle-alimentos/ong', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa_plus/empresa', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let resultEmpresa = await controllerEmpresa.inserirEmpresa(dadosBody, contentType)
+
+    response.status(resultEmpresa.status_code)
+    response.json(resultEmpresa)
+})
+
+///////////////////////////////////////////////////////ONGS///////////////////////////////////////////////////////////////////
+
+app.post('/v1/mesa_plus/ong', cors(), bodyParserJSON, async function (request, response){
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
@@ -81,6 +97,9 @@ app.post('/v1/controle-alimentos/ong', cors(), bodyParserJSON, async function (r
     response.json(resultOng)
 })
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
     console.log('API funcionando e aguardadndo requisições')
 })

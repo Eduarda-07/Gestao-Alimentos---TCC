@@ -1,6 +1,6 @@
 /****************************************************************************************************
  * Objetivo: controller responsável pela regra de negócio referente ao CROUD de empresas
- * Data: 16/09/25
+ * Data: 18/09/25
  * Autor: Eduarda Silva
  * Versão: 1.0
  ***************************************************************************************************/
@@ -13,7 +13,7 @@ const empresaDAO = require('../../model/DAO/empresa.js')
 //import da biblioteca para criptografar as senhas
 const bcrypt = require('bcrypt')
 
-// função para tratar a inserção de um novo usuário 
+// função para tratar a inserção de uma nova empresa
 const inserirEmpresa = async function (empresa, contentType) {
 
     try {
@@ -25,7 +25,7 @@ const inserirEmpresa = async function (empresa, contentType) {
                 empresa.nome      == ""  || empresa.nome     == undefined  || empresa.nome     == null  || empresa.nome.length     > 100  ||
                 empresa.email     == ""  || empresa.email    == undefined  || empresa.email    == null  || empresa.email.length    > 100  ||
                 empresa.senha     == ""  || empresa.senha    == undefined  || empresa.senha    == null  ||   
-                empresa.cnpj      == ""  || empresa.cnpj     == undefined  || empresa.cnpj     == null  || empresa.cnpj.length     > 15   ||
+                empresa.cnpj_mei  == ""  || empresa.cnpj_mei == undefined  || empresa.cnpj_mei == null  || empresa.cnpj_mei.length > 15   ||
                 empresa.telefone  == ""  || empresa.telefone == undefined  || empresa.telefone == null  || empresa.telefone.length > 15   
                 
             ){
@@ -43,15 +43,15 @@ const inserirEmpresa = async function (empresa, contentType) {
                 
                 empresa.senha = hashedSenha
 
-                let resultInsert = await usuariosDAO.insertUsuario(empresa)
+                let resultInsert = await empresaDAO.insertEmpresa(empresa)
                 if (resultInsert){
-                    let dadosUsuario = {
+                    let dadosEmpresa = {
                         status: true,
                         status_code: message.SUCCESS_CREATED_ITEM.status_code,
                         message: message.SUCCESS_CREATED_ITEM.message,
-                        usuario: resultInsert
+                        empresa: resultInsert
                     }
-                    return dadosUsuario
+                    return dadosEmpresa
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL // Retorna 500 - Erro no modelo/DAO
                 }

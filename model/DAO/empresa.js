@@ -1,6 +1,6 @@
 /************************************************************************************************
- * Objetivo: criar a comunicação com o banco de dados, para fazer o CRUD de ongs
- * Data: 16/09/25
+ * Objetivo: criar a comunicação com o banco de dados, para fazer o CRUD de empresas
+ * Data: 18/09/25
  * Autor: Eduarda Silva
  * Versão: 1.1
  ************************************************************************************************/
@@ -11,26 +11,28 @@ const { PrismaClient } = require('@prisma/client')
 // instancia a biblioteca do prisma/client
 const prisma = new PrismaClient()
 
-// função para inserir uma nova ong
-const insertOng = async function(ong) {
+// função para inserir uma nova empresa
+const insertEmpresa = async function(empresa) {
     try {
-        let sql = `INSERT INTO tbl_ongs(
+        let sql = `INSERT INTO tbl_empresas(
                        nome,
                        email,
                        senha,
-                       telefone 
+                       cnpj_mei,
+                       telefone
                    )
                    VALUES (
-                       '${ong.nome}',
-                       '${ong.email}',
-                       '${ong.senha}',
-                       '${ong.telefone}'
+                       '${empresa.nome}',
+                       '${empresa.email}',
+                       '${empresa.senha}',
+                       '${empresa.cnpj_mei}',
+                       '${empresa.telefone}'
                    )`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        // result === 1 -> para verificar se uma linha foi afetada (adicionada)
-        if (result === 1) { 
+         // result === 1 -> para verificar se uma linha foi afetada (adicionada)
+         if (result === 1) { 
             let lastIdResult = await prisma.$queryRawUnsafe(`SELECT LAST_INSERT_ID() AS id`)
 
 
@@ -38,14 +40,16 @@ const insertOng = async function(ong) {
 
             return {
                 id: Number(idGerado), 
-                nome: ong.nome,
-                email: ong.email,
-                senha: ong.senha,
-                telefone: ong.telefone
+                nome: empresa.nome,
+                email: empresa.email,
+                senha: empresa.senha,
+                cnpj_mei: empresa.cnpj_mei,
+                telefone: empresa.telefone
             }
         } else {
             return false
         }
+
 
     } catch (error) {
         console.log(error)
@@ -55,5 +59,5 @@ const insertOng = async function(ong) {
 
 // exportando funções
 module.exports = {
-    insertOng
+    insertEmpresa
 }

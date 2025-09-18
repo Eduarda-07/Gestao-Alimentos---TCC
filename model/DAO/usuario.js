@@ -31,10 +31,24 @@ const insertUsuario = async function(usuario) {
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if (result)
-            return true
-        else
+        // result === 1 -> para verificar se uma linha foi afetada (adicionada)
+        if (result === 1) { 
+            let lastIdResult = await prisma.$queryRawUnsafe(`SELECT LAST_INSERT_ID() AS id`)
+
+
+            let idGerado = lastIdResult[0].id
+
+            return {
+                id: Number(idGerado), 
+                nome: usuario.nome,
+                email: usuario.email,
+                senha: usuario.senha,
+                cpf: usuario.cpf,
+                telefone: usuario.telefone
+            }
+        } else {
             return false
+        }
 
     } catch (error) {
         console.log(error)
