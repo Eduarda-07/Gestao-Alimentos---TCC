@@ -14,22 +14,7 @@ const prisma = new PrismaClient()
 // função para inserir um novo usuario
 const insertUsuario = async function(usuario) {
     try {
-        let sql = `INSERT INTO tbl_usuarios(
-                       nome,
-                       email,
-                       senha,
-                       cpf,
-                       telefone 
-                   )
-                   VALUES (
-                       '${usuario.nome}',
-                       '${usuario.email}',
-                       '${usuario.senha}',
-                       '${usuario.cpf}',
-                       '${usuario.telefone}'
-                   )`
-
-        let result = await prisma.$executeRawUnsafe(sql)
+        const result = await prisma.$executeRaw`CALL inserir_usuario(${usuario.nome}, ${usuario.email}, ${usuario.senha}, ${usuario.cpf}, ${usuario.telefone})`
 
         // result === 1 -> para verificar se uma linha foi afetada (adicionada)
         if (result === 1) { 

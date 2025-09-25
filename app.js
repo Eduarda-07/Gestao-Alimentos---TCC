@@ -57,7 +57,7 @@ const controllerLogin = require('./controller/login/login')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
-app.post('/v1/mesa_plus/usuario', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa-plus/usuario', cors(), bodyParserJSON, async function (request, response){
      //recebe o content type da requisição
      let contentType = request.headers['content-type']
 
@@ -71,7 +71,7 @@ app.post('/v1/mesa_plus/usuario', cors(), bodyParserJSON, async function (reques
 
 ////////////////////////////////////////////////////EMPRESAS//////////////////////////////////////////////////////////////////
 
-app.post('/v1/mesa_plus/empresa', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (request, response){
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
@@ -85,7 +85,7 @@ app.post('/v1/mesa_plus/empresa', cors(), bodyParserJSON, async function (reques
 
 ///////////////////////////////////////////////////////ONGS///////////////////////////////////////////////////////////////////
 
-app.post('/v1/mesa_plus/ong', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa-plus/ong', cors(), bodyParserJSON, async function (request, response){
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
@@ -99,7 +99,7 @@ app.post('/v1/mesa_plus/ong', cors(), bodyParserJSON, async function (request, r
 
 ///////////////////////////////////////////////////////LOGIN///////////////////////////////////////////////////////////////////
 
-app.post('/v1/mesa_plus/login', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa-plus/login', cors(), bodyParserJSON, async function (request, response){
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 

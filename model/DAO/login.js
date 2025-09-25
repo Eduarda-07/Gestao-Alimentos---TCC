@@ -12,9 +12,9 @@ const{PrismaClient } = require('@prisma/client')
 // instancia (criar um objeto a ser utilizado) a bliblioteca do prisma/client
 const prisma = new PrismaClient()
 
-const selectEmailLogin = async function (email, nome) {
+const selectEmailLogin = async function (email, tipo) {
     try {
-        if (nome === "usuario"){
+        if (tipo === "pessoa"){
             let sql = `SELECT * FROM tbl_usuarios WHERE email = '${email}'`
       
             let result = await prisma.$queryRawUnsafe(sql)
@@ -25,7 +25,7 @@ const selectEmailLogin = async function (email, nome) {
                 return false
             }
             
-        } else if (nome === "empresa"){
+        } else if (tipo === "empresa"){
             let sql = `SELECT * FROM tbl_empresas WHERE email = '${email}'`
       
             let result = await prisma.$queryRawUnsafe(sql)
@@ -36,7 +36,7 @@ const selectEmailLogin = async function (email, nome) {
                 return false
             }
             
-        } else if (nome === "ong"){
+        } else if (tipo === "ong"){
             let sql = `SELECT * FROM tbl_ongs WHERE email = '${email}'`
       
             let result = await prisma.$queryRawUnsafe(sql)
