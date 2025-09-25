@@ -14,20 +14,9 @@ const prisma = new PrismaClient()
 // função para inserir uma nova ong
 const insertOng = async function(ong) {
     try {
-        let sql = `INSERT INTO tbl_ongs(
-                       nome,
-                       email,
-                       senha,
-                       telefone 
-                   )
-                   VALUES (
-                       '${ong.nome}',
-                       '${ong.email}',
-                       '${ong.senha}',
-                       '${ong.telefone}'
-                   )`
+       
+        const result = await prisma.$executeRaw `CALL inserir_ong(${ong.nome}, ${ong.email}, ${ong.senha}, ${ong.telefone})`;
 
-        let result = await prisma.$executeRawUnsafe(sql)
 
         // result === 1 -> para verificar se uma linha foi afetada (adicionada)
         if (result === 1) { 
