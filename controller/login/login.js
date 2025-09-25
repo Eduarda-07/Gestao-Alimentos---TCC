@@ -21,14 +21,14 @@ const loginUsuario = async function(usuario) {
         if (
        usuario.email === "" ||   usuario.email === undefined || usuario.email === null  ||  usuario.email.length >100  ||
        usuario.senha === "" ||   usuario.senha === undefined || usuario.senha === null ||
-       usuario.nome === "" ||   usuario.nome === undefined || usuario.nome === null  
+       usuario.tipo === "" ||   usuario.tipo === undefined || usuario.tipo === null  
         ) {
         return message.ERROR_REQUIRED_FIELD 
         
          } else {
         let dadosUsuarioLogado = {}
 
-        let resultEmail = await loginDAO.selectEmailLogin(usuario.email, usuario.nome)
+        let resultEmail = await loginDAO.selectEmailLogin(usuario.email, usuario.tipo)
        
         if(resultEmail!= false || typeof(resultEmail) == 'object'){
             // console.log(resultEmail)
@@ -43,6 +43,7 @@ const loginUsuario = async function(usuario) {
                 if (conferindoSenha){
                     dadosUsuarioLogado.status = true
                     dadosUsuarioLogado.status_code = 200
+                    dadosUsuarioLogado.message = message.SUCCESS_CREATED_ITEM.message
                     dadosUsuarioLogado.usuario = {
                         id: usuarioUnico.id,
                         nome: usuarioUnico.nome,

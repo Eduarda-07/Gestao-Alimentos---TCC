@@ -98,7 +98,7 @@ end //
 delimiter ; 							 
 										 
 delimiter //
-create procedure inserir_ongs(		     
+create procedure inserir_ong(		     
     in d_nome varchar (200),			 
     in d_email varchar(150),			 
     in d_senha text,				 

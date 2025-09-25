@@ -49,7 +49,7 @@ const selectEmailLogin = async function (email, tipo) {
         }
         
     } catch (error) {
-        console.log(error)
+        console.log(error, "erooooo")
         return false;
     }
 }
