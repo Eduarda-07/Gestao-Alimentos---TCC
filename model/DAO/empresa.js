@@ -14,22 +14,8 @@ const prisma = new PrismaClient()
 // função para inserir uma nova empresa
 const insertEmpresa = async function(empresa) {
     try {
-        let sql = `INSERT INTO tbl_empresas(
-                       nome,
-                       email,
-                       senha,
-                       cnpj_mei,
-                       telefone
-                   )
-                   VALUES (
-                       '${empresa.nome}',
-                       '${empresa.email}',
-                       '${empresa.senha}',
-                       '${empresa.cnpj_mei}',
-                       '${empresa.telefone}'
-                   )`
+        const result = await prisma.$executeRaw `CALL inserir_empresa(${empresa.nome}, ${empresa.email}, ${empresa.senha}, ${empresa.cnpj_mei}, ${empresa.telefone})`;
 
-        let result = await prisma.$executeRawUnsafe(sql)
 
          // result === 1 -> para verificar se uma linha foi afetada (adicionada)
          if (result === 1) { 
