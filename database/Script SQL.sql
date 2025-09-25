@@ -112,3 +112,8 @@ end //
 delimiter ;
 						 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
+
+
+ALTER TABLE tbl_usuarios
+ADD COLUMN token_recuperacao VARCHAR(255),
+ADD COLUMN token_expiracao DATETIME;
