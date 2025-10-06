@@ -48,6 +48,64 @@ create table tbl_ongs (
     codigo_expiracao datetime
 );
 
+create table tbl_endereco (
+id int auto_increment primary key,
+logradouro varchar(200) not null,
+complemento varchar(80),
+bairro varchar(100) not null,
+cidade varchar(100) not null,
+numero varchar(6) not null,
+estado varchar(80) not null,
+CEP varchar(15) not null,
+id_usuario int not null,
+id_empresa int not null,
+id_ong int not null,
+
+constraint endereco_usuario foreign key(id_usuario) references tbl_usuarios(id)  
+	on delete cascade,  
+  
+constraint endereco_empresa foreign key(id_empresa) references tbl_empresas(id)  
+	on delete cascade,  
+  
+constraint endereco_ong foreign key(id_ong) references tbl_ongs(id)  
+	on delete cascade,  
+	  
+constraint check_dono check (  
+	(id_usuario is not null) + (id_empresa is not null) + (id_ong is not null) = 1  
+)
+
+);
+
+create table tbl_categoria (
+id int auto_increment primary key,
+nome varchar(255) not null,
+descricao varchar(255)
+)
+
+create table tbl_alimentos (
+id int auto_increment primary key,
+nome varchar(150) not null,
+quantidade varchar(100) not null,
+data_de_validade date,
+descricao text,
+imagem varchar(255),
+id_empresa int not null,
+
+constraint fk_alimento_empresa foreign key (id_empresa) references tbl_empresa(id)
+
+)
+
+create table tbl_alimento_categoria (
+id int auto_increment primary key,
+id_alimento int not null,
+id_categoria int not null,
+
+constraint fk_alimento foreign key (id_alimento) references tbl_alimentos(id),  
+constraint fk_categoria foreign key (id_categoria) references tbl_categoria(id)
+
+);
+
+
 --  mostra a data que o usuario atualizou os dados
 delimiter //									
 create trigger trg_update_usuarios			
@@ -130,3 +188,74 @@ delimiter ;
 ALTER TABLE tbl_usuarios
 ADD COLUMN token_recuperacao VARCHAR(255),
 ADD COLUMN token_expiracao DATETIME;
+
+-----------------------------------------------------
+
+-- deletar o usuario sem interferencia da chave estrageira 
+delimiter //											
+create procedure deletar_usuario (						
+	in d_id int											
+)													
+begin													
+	delete from tbl_usuarios where id = d_id;			
+end //													
+delimiter ; 											
+														
+delimiter //											
+create procedure deletar_empresa (						
+	in d_id int											
+)														
+begin												
+	delete from tbl_empresas where id = d_id;			
+end //													
+delimiter ; 										
+													
+delimiter //											
+create procedure deletar_ong (							
+	in d_id int											
+)														
+begin													
+	delete from tbl_ongs where id = d_id;				
+end //													
+delimiter ; 											
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
+
+
+-- view para ver uma tabela unificada de clientes e empresas
+CREATE VIEW vw_usuarios AS
+SELECT id, nome, email, 'Usuario' AS tipo_usuario FROM tbl_usuarios
+UNION
+SELECT id, nome, email, 'Empresa' AS tipo_usuario FROM tbl_empresas
+UNION
+SELECT id, nome, email, 'ONG' AS tipo_usuario FROM tbl_ongs;		  
+
+SELECT * FROM vw_usuarios;
+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+ 
+CALL inserir_usuario('Ana Paula', 'ana4@email.com', 'senhaAna', '111.222.333-44', '11912345678');
+CALL inserir_empresa('Super Tech', 'contato@supertech.com', 'senhaSuper', '12.345.67801-90', '11333221100');
+CALL inserir_ongs('Mundo Melhor', 'contato@mundomelhor.org', 'senhaMundo', '11988776655');
+
+-- Consultar para conferir os dados
+SELECT * FROM tbl_cliente;
+SELECT * FROM tbl_empresa;
+SELECT * FROM tbl_ONGs;
+SELECT * FROM vw_usuarios;
+
+-- Testar update para ver se data_modificacao atualiza
+UPDATE tbl_cliente SET telefone = '11999999999' WHERE id = 1;
+UPDATE tbl_empresa SET telefone = '11444444444' WHERE id = 1;
+UPDATE tbl_ONGs SET telefone = '11900001111' WHERE id = 1;
+
+-- Verificar data_modificacao atualizada
+SELECT id, nome, telefone, data_modificacao FROM tbl_cliente WHERE nome = 'Ana Paula';
+SELECT id, nome, telefone, data_modificacao FROM tbl_empresa WHERE nome = 'Super Tech';
+SELECT id, nome, telefone, data_modificacao FROM tbl_ONGs WHERE nome = 'Mundo Melhor';
+
+-- Testar delete via procedure
+CALL deletar_cliente((SELECT id FROM tbl_cliente WHERE nome = 'Ana Paula'));
+CALL deletar_empresa((SELECT id FROM tbl_empresa WHERE nome = 'Super Tech'));
+CALL deletar_ONGs((SELECT id FROM tbl_ONGs WHERE nome = 'Mundo Melhor'));
+
+-- Conferir se deletou
+SELECT * FROM vw_usuarios;

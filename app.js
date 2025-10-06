@@ -23,6 +23,9 @@
  * 
  * Para criptografar as senhas e palavras chaves deve-se instalar o bcrypt:
  *      npm install bcrypt (o import dessa biblioteca deve ser feito na controler de usuários)
+ * 
+ * Para gerar os códigos e enviar email:
+ *      npm install nodemailer
  ***********************************************************************************************/
 
 
@@ -54,6 +57,7 @@ const controllerUsuarios = require('./controller/usuarios/controllerUsuario')
 const controllerOngs = require('./controller/ongs/controllerOngs')
 const controllerEmpresa = require('./controller/empresas/controllerEmpresa')
 const controllerLogin = require('./controller/login/login')
+const controllerCodigo = require('./controller/codigo/controllerCodigo')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -111,7 +115,48 @@ app.post('/v1/mesa-plus/login', cors(), bodyParserJSON, async function (request,
     response.json(result)
 })
 
+//////////////////////////////////////////////// ENVIAR CÓDIGO//////////////////////////////////////////
+app.post('/v1/mesa-plus/enviar-codigo', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+    let dadosBody = request.body
+    
+    
+    let result = await controllerCodigo.enviarCodigo(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+///////////////////////////////////////////VERIFICAR CÓDIGO/////////////////////////////////////////////
+
+app.post('/v1/mesa-plus/codigo-recuperacao', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCodigo.consultarCodigo(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+///////////////////////////////////////////////////////APAGAR CÓDIGO///////////////////////////////////////////////////////////////////
+
+app.put('/v1/mesa-plus/apagar-codigo', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCodigo.apagarCodigo(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
-    console.log('API funcionando e aguardadndo requisições')
+    console.log('API funcionando e aguardadndo requisições... Porta: 8080')
 })
