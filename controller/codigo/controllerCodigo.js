@@ -59,7 +59,7 @@ const consultarCodigo = async function(usuario,contentType){
                     return message.ERROR_INTERNAL_SERVER_MODEL 
                 }else if (!result || !result.codigo_recuperacao) {
                 // Email existe, mas não tem código de recuperação ou já foi usado
-                    return { status: 404, valido: false, message: "Token não encontrado ou inválido." }
+                    return message.ERROR_NOT_FOUND
                 } else if (result){
 
                     //
@@ -71,14 +71,23 @@ const consultarCodigo = async function(usuario,contentType){
                     if (agora > expiracao) {
                         // Token expirado: LIMPA O TOKEN e avisa o usuário
                         await codigoDAO.deleteCodigo(usuario.email, usuario.tipo)
-                        return { status: 401, valido: false, message: "Código de verificação expirou. Solicite um novo." };
+                        return message.ERROR_CODE_EXPIRED // código expirou
                     }else {
 
                         // verificando se o código digitado é igual ao código cadastradi no banco
                         if (usuario.codigo === codigo_recuperacao) {
-                            return message.SUCCESS_UPDATED_ITEM
+                            return message.SUCCESS_CODE_VERIFIED
+
+                            let resultDelete = await codigoDAO.deleteCodigo(usuario.email, usuario.tipo)
+
+                            if (resultDelete) {
+                                return message.SUCCESS_DELETED_ITEM
+                            } else {
+                                return message.ERROR_INTERNAL_SERVER_MODEL
+                            }
+                            
                         } else {
-                            return { status: 401, valido: false, message: "Código de verificação inválido." }
+                            return message.ERROR_INVALID_CODE
                         }
                     }
                 }

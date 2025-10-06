@@ -19,12 +19,19 @@ const ERROR_CONTENT_TYPE =  {status: false, status_code: 415, message:"Não foi 
 
 const ERROR_NOT_FOUND = { status: false, status_code: 404, message: "Não foram encontrados itens de retorno!!!"}
 
+const ERROR_CODE_EXPIRED = { status: false, status_code: 401, message: "Código de verificação expirou. Solicite um novo!!!"}
+
+const ERROR_INVALID_CODE = { status: false, status_code: 401, message: "Código de verificação inválido. Verifique seu e-mail e tente novamente!!!"}
+
+
 /*************************** STATUS CODE DE MENSAGEM DE SUCESSO ************************/
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: "Item criado com sucesso!!"}
 
 const SUCCESS_DELETED_ITEM = {status: true, status_code: 200, message: "Item deletado com sucesso!!"}
 
 const SUCCESS_UPDATED_ITEM = {status: true, status_code: 200, message: "Item atualizado com sucesso!!"}
+
+const SUCCESS_CODE_VERIFIED = {status: true, status_code: 200, message: "Código verificado com sucesso!!"}
 
 
 module.exports = {
@@ -33,7 +40,10 @@ module.exports = {
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_CONTENT_TYPE,
     ERROR_NOT_FOUND,
+    ERROR_CODE_EXPIRED,
+    ERROR_INVALID_CODE,
     SUCCESS_CREATED_ITEM,
     SUCCESS_DELETED_ITEM,
-    SUCCESS_UPDATED_ITEM
+    SUCCESS_UPDATED_ITEM,
+    SUCCESS_CODE_VERIFIED
 }
