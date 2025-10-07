@@ -26,10 +26,10 @@ const enviarCodigo = async function(usuario, contentType){
                 let result = await emailService.enviarEmailRecuperacao(usuario.email, usuario.tipo)
 
                 if (result && result.success) {
-                    return { status_code: 200, message: "Código de recuperação enviado com sucesso!" }
+                    return message.SUCCESS_CODE_SENT
                 } else {
                     // Erro pode vir do DAO (email não existe) ou do NodeMailer (conexão)
-                    return { status_code: 500, message: result.message || result.error || "Falha ao enviar o código."}
+                    return message.ERROR_SENDING_CODE
                 }
             }
         } else{
@@ -77,15 +77,6 @@ const consultarCodigo = async function(usuario,contentType){
                         // verificando se o código digitado é igual ao código cadastradi no banco
                         if (usuario.codigo === codigo_recuperacao) {
                             return message.SUCCESS_CODE_VERIFIED
-
-                            let resultDelete = await codigoDAO.deleteCodigo(usuario.email, usuario.tipo)
-
-                            if (resultDelete) {
-                                return message.SUCCESS_DELETED_ITEM
-                            } else {
-                                return message.ERROR_INTERNAL_SERVER_MODEL
-                            }
-                            
                         } else {
                             return message.ERROR_INVALID_CODE
                         }
@@ -120,7 +111,7 @@ const apagarCodigo = async function(usuario, contentType){
                 if (result) {
                     return message.SUCCESS_DELETED_ITEM
                 } else {
-                    return message.ERROR_INTERNAL_SERVER_MODEL
+                    return message.ERROR_EMAIL
                 }
             }
         } else{

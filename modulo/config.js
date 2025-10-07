@@ -23,6 +23,10 @@ const ERROR_CODE_EXPIRED = { status: false, status_code: 401, message: "Código 
 
 const ERROR_INVALID_CODE = { status: false, status_code: 401, message: "Código de verificação inválido. Verifique seu e-mail e tente novamente!!!"}
 
+const ERROR_SENDING_CODE = { status: false, status_code: 500, message: "Falha ao enviar o código!!!"}
+
+const ERROR_EMAIL = { status: false, status_code: 500, message: "Falha ao enviar o código. Verifique se o e-mail está correto!!!"}
+
 
 /*************************** STATUS CODE DE MENSAGEM DE SUCESSO ************************/
 const SUCCESS_CREATED_ITEM = {status: true, status_code: 201, message: "Item criado com sucesso!!"}
@@ -33,6 +37,8 @@ const SUCCESS_UPDATED_ITEM = {status: true, status_code: 200, message: "Item atu
 
 const SUCCESS_CODE_VERIFIED = {status: true, status_code: 200, message: "Código verificado com sucesso!!"}
 
+const SUCCESS_CODE_SENT = {status: true, status_code: 200, message: "Código de recuperação enviado com sucesso!!"}
+
 
 module.exports = {
     ERROR_REQUIRED_FIELD,
@@ -42,8 +48,11 @@ module.exports = {
     ERROR_NOT_FOUND,
     ERROR_CODE_EXPIRED,
     ERROR_INVALID_CODE,
+    ERROR_SENDING_CODE,
+    ERROR_EMAIL,
     SUCCESS_CREATED_ITEM,
     SUCCESS_DELETED_ITEM,
     SUCCESS_UPDATED_ITEM,
-    SUCCESS_CODE_VERIFIED
+    SUCCESS_CODE_VERIFIED,
+    SUCCESS_CODE_SENT
 }
