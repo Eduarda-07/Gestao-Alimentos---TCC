@@ -10,7 +10,7 @@ const crypto = require("crypto")
 const { networkInterfaces } = require("os")
 
 
-const codigoDAO = require("./model/DAO/recuperarSenha")
+const codigoDAO = require("./model/DAO/codigoEmail")
 
 // gerar código
 function gerarCodigo() {

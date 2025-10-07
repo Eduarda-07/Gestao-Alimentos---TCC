@@ -1,5 +1,5 @@
 /****************************************************************************************************
- * Objetivo: controller responsável pela regra de negócio referente ao envio de emial
+ * Objetivo: controller responsável pela regra de negócio referente ao envio de email
  * Data: 02/10/25
  * Autor: Eduarda Silva
  * Versão: 1.0
@@ -8,7 +8,7 @@
 // import do arquivo de mensagens e status code o projeto
 const message = require('../../modulo/config.js')
 
-const codigoDAO = require('../../model/DAO/recuperarSenha.js')
+const codigoDAO = require('../../model/DAO/codigoEmail.js')
 const emailService = require('../../index.js')
 
 
