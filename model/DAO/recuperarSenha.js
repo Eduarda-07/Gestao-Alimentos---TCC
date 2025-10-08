@@ -12,7 +12,7 @@ const{PrismaClient } = require('@prisma/client')
 // instancia (criar um objeto a ser utilizado) a bliblioteca do prisma/client
 const prisma = new PrismaClient()
 
-const updateSenha = async function (id, novaSenhaHash, tipo, email) {
+const updateSenha = async function (id, senhaHash, tipo, email) {
     let tipoUsuario = ""
 
     if (String(tipo).toLocaleLowerCase() === "pessoa"){
@@ -25,26 +25,27 @@ const updateSenha = async function (id, novaSenhaHash, tipo, email) {
         return false
     }
 
+    let params = [senhaHash]
     let where = ""
 
-    let sql = `update ${tipoUsuario} set senha = '${novaSenhaHash}' where `
-
-    if(id){
-        where = `id = '${id}'`
-        sql = sql+ where
-    }else if(email){
-        where = `email = '${email}'`
-        sql = sql+ where
-    }else{
+    if (id) {
+        whereCondition = `id = $2` 
+        params.push(parseInt(id))
+    } else if (email) {
+        whereCondition = `email = $2`
+        params.push(email) 
+    } else {
         return false
     }
-
+    let sql = `update ${tipoUsuario} set senha = $1 where ${where}`
 
     try {
-        let result = await prisma.$executeRawUnsafe(sql)
+        let result = await prisma.$executeRaw(sql, ...params)
         return result   
     } catch (error) {
-        return false
+        console.error("Erro no DAO updateSenha:", error)
+        throw error
+    
     }
 
 }

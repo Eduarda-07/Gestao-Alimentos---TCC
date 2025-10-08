@@ -11,65 +11,45 @@ const message = require('../../modulo/config.js')
 const senhaDAO = require('../../model/DAO/recuperarSenha.js')
 
 
-const atualizarSenha = async function(id, email, tipo, contentType){
+const atualizarSenha = async function(id, email, tipo, senha, contentType){
 
     try{
         
         if(String(contentType).toLowerCase() == 'application/json'){
 
-            if ( 
-                (id == null && id == undefined && (isNaN(id) || id <= 0)) &&   
-                (email == null && email == undefined  || email == "" ))
+            if( 
+                tipo  == "" || tipo  == undefined || tipo  == null || tipo.trim() === ''||
+                senha == "" || senha == undefined || senha == null || senha.trim() === ''||
+                (
+                    (email === "" || email === undefined || email === null || email.trim() === '')  && 
+                    (id === "" || id === undefined || id === null || isNaN(id) || id <= 0)
+                )
+
             ) {
             
-            return message.ERROR_REQUIRED_FIELD //400
+                return message.ERROR_REQUIRED_FIELD //400
     
             } else {
-    
-            let arrayReceita = []
-            let dadosReceita = {}
+                let senhaHash
+                    try {
+                        // o numero 10 é um nível de segurança basico
+                        hashedSenha = await bcrypt.hash(senha, 10)
+                    } catch (hashError) {
+                        console.log("Erro ao gerar hash da senha:", hashError)
+                        return message.ERROR_INTERNAL_SERVER_CONTROLLER // erro no servidor da controller
+                    }
 
-            let resultReceita= await filtroDAO.selectReceitaFiltro(parseInt(id_categoria), parseInt(id_dificuldade))
+                let result = await senhaDAO.updateSenha(parseInt(id), senhaHash, tipo, email)
             
     
-            if(resultReceita!= false || typeof(resultReceita) == 'object'){
-    
-                if(resultReceita.length > 0){
-    
-                    dadosReceita.status = true
-                    dadosReceita.status_code = 200
-                    dadosReceita.itens = resultReceita.length
-    
-                    for(const itemReceita of resultReceita){
-    
-                        let dadosUsuario = await controllerUsuario.buscarUsuario(itemReceita.id_usuarios)
-                        itemReceita.usuario = dadosUsuario.user
-                        delete itemReceita.id_usuarios
-                            
-                        let dadosDificuldade = await controllerNivelDificuldade.buscarNivelDificuldade(itemReceita.id_nivel_dificuldade)
-                        itemReceita.dificuldade = dadosDificuldade.nivel
-                        delete itemReceita.id_nivel_dificuldade
-    
-                        let dadosCategoria = await controllerReceitaCategoria.buscarCategoriaPorReceita(itemReceita.id)
-                        if (dadosCategoria && Array.isArray(dadosCategoria.receitaCategoria)) {
-                            itemReceita.categoria = dadosCategoria.receitaCategoria
-                        } else {
-                            itemReceita.categoria = []
-                        }
-    
-                        arrayReceita.push(itemReceita)
-     
-                    }
-                    dadosReceita.receita = arrayReceita
-    
-                    return dadosReceita
-                }else{
-                    return message.ERROR_NOT_FOUND //404
+                if(result){
+                    return message.SUCCESS_UPDATED_ITEM
+                } else if (result === 0) {
+
+                    return message.ERROR_NOT_FOUND // 404
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL // 500
                 }
-          
-            }else{
-                return message.ERROR_INTERNAL_SERVER_MODEL //500
-            }
         }
 
         }else{
@@ -78,4 +58,4 @@ const atualizarSenha = async function(id, email, tipo, contentType){
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
-    }
+}
