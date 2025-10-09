@@ -58,6 +58,7 @@ const controllerOngs = require('./controller/ongs/controllerOngs')
 const controllerEmpresa = require('./controller/empresas/controllerEmpresa')
 const controllerLogin = require('./controller/login/login')
 const controllerCodigo = require('./controller/codigo/controllerCodigo')
+const controllerSenha = require('./controller/senha/atualizarSenha')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -154,6 +155,22 @@ app.put('/v1/mesa-plus/apagar-codigo', cors(), bodyParserJSON, async function (r
 
     response.status(result.status_code)
     response.json(result)
+})
+
+///////////////////////////////////////////////////////NOVA SENHA///////////////////////////////////////////////////////////////////
+
+app.put('/v1/mesa-plus/nova-senha/', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerSenha.atualizarSenha(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+    console.log(dadosBody);
+    
 })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

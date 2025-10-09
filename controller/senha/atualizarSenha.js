@@ -10,36 +10,38 @@ const message = require('../../modulo/config.js')
 
 const senhaDAO = require('../../model/DAO/recuperarSenha.js')
 
+const bcrypt = require('bcrypt')
 
-const atualizarSenha = async function(id, email, tipo, senha, contentType){
+
+const atualizarSenha = async function( dados,contentType){
 
     try{
         
         if(String(contentType).toLowerCase() == 'application/json'){
 
             if( 
-                tipo  == "" || tipo  == undefined || tipo  == null || tipo.trim() === ''||
-                senha == "" || senha == undefined || senha == null || senha.trim() === ''||
+                dados.tipo  == "" || dados.tipo  == undefined || dados.tipo  == null || dados.tipo.trim() === ''||
+                dados.senha == "" || dados.senha == undefined || dados.senha == null || dados.senha.trim() === ''||
                 (
-                    (email === "" || email === undefined || email === null || email.trim() === '')  && 
-                    (id === "" || id === undefined || id === null || isNaN(id) || id <= 0)
+                    (dados.email === "" || dados.email === undefined || dados.email === null || dados.email.trim() === '')  && 
+                    (dados.id === "" || dados.id === undefined || dados.id === null || isNaN(dados.id) || dados.id <= 0)
                 )
 
             ) {
-            
+                
                 return message.ERROR_REQUIRED_FIELD //400
     
             } else {
                 let senhaHash
                     try {
                         // o numero 10 é um nível de segurança basico
-                        hashedSenha = await bcrypt.hash(senha, 10)
+                        senhaHash = await bcrypt.hash(dados.senha, 10)
                     } catch (hashError) {
                         console.log("Erro ao gerar hash da senha:", hashError)
                         return message.ERROR_INTERNAL_SERVER_CONTROLLER // erro no servidor da controller
                     }
 
-                let result = await senhaDAO.updateSenha(parseInt(id), senhaHash, tipo, email)
+                let result = await senhaDAO.updateSenha(parseInt(dados.id), senhaHash, dados.tipo, dados.email)
             
     
                 if(result){
@@ -56,6 +58,12 @@ const atualizarSenha = async function(id, email, tipo, senha, contentType){
             return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
+        console.log(error);
+        
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
+}
+
+module.exports = {
+    atualizarSenha
 }

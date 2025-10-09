@@ -2,56 +2,57 @@
  * objetivo: criar a comunicação com o banco de dados, para atualizar a senha de um usuário
  * data: 06/10/25
  * autor: Eduarda Silva
- * versão: 1.0
  *******************************************************************************************/
 
 
-// import da biblioteca do prisma client para executar os scripts SQL
-const{PrismaClient } = require('@prisma/client')
+const message = require('../../modulo/config')
 
-// instancia (criar um objeto a ser utilizado) a bliblioteca do prisma/client
+const { PrismaClient, Prisma } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 const updateSenha = async function (id, senhaHash, tipo, email) {
-    let tipoUsuario = ""
+    let tabela = ""
 
-    if (String(tipo).toLocaleLowerCase() === "pessoa"){
-        tipoUsuario = "tbl_usuarios"
-    }else if (String(tipo).toLocaleLowerCase() === "ong"){
-        tipoUsuario = "tbl_ongs"
-    }else if (String(tipo).toLocaleLowerCase() === "empresa"){
-        tipoUsuario = "tbl_empresas"
-    }else{
+    const tipoUsuario = String(tipo).toLowerCase()
+
+    if (tipoUsuario === "pessoa") {
+        tabela = "tbl_usuarios"
+    } else if (tipo === "ong") {
+        tabela = "tbl_ongs"
+    } else if (tipoUsuario === "empresa") {
+        tabela = "tbl_empresas"
+    } else {
+        
         return false
     }
 
-    let params = [senhaHash]
-    let where = ""
+    
+    let clausulaWhere = Prisma.empty
+    let valorWhere = null
 
     if (id) {
-        whereCondition = `id = $2` 
-        params.push(parseInt(id))
+        valorWhere = parseInt(id)
+        clausulaWhere = Prisma.sql`WHERE id = ${valorWhere}`
     } else if (email) {
-        whereCondition = `email = $2`
-        params.push(email) 
+        valorWhere = email
+        clausulaWhere = Prisma.sql`WHERE email = ${valorWhere}`
     } else {
+        // Se id e email não existirem, encerra
         return false
     }
-    let sql = `update ${tipoUsuario} set senha = $1 where ${where}`
 
-    try {
-        let result = await prisma.$executeRaw(sql, ...params)
-        return result   
-    } catch (error) {
-        console.error("Erro no DAO updateSenha:", error)
-        throw error
     
+    const sql = Prisma.sql`UPDATE ${Prisma.raw(tabela)} SET senha = ${senhaHash} ${clausulaWhere}`
+    
+    try {
+       
+        let result = await prisma.$executeRaw(sql)
+        
+        return result
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_MODEL
     }
-
 }
-
-
-
 
 module.exports = {
     updateSenha

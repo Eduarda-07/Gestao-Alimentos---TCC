@@ -53,7 +53,9 @@ const loginUsuario = async function(usuario) {
                         cnpj_mei: usuarioUnico.cnpj_mei || null,
                         foto_perfil: usuarioUnico.foto_perfil || null 
                     }
-                } 
+                } else{
+                    return message.ERROR_NOT_FOUND
+                }
                 return dadosUsuarioLogado
             }else{
                 console.log(`Erro senha`)
