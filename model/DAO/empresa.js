@@ -43,7 +43,26 @@ const insertEmpresa = async function(empresa) {
     }
 }
 
+// Função para buscar empresa por ID (simplesmente para checar se existe)
+const selectEmpresaById = async function(id) {
+    try {
+        const sql = `SELECT id FROM tbl_empresas WHERE id = ${id}`;
+        
+        const result = await prisma.$queryRawUnsafe(sql);
+        
+        if (result && result.length > 0) {
+            return result[0]; // Retorna a empresa (ou apenas o ID)
+        } else {
+            return null; // Não encontrado
+        }
+    } catch (error) {
+        console.error("Erro ao verificar empresa:", error);
+        return false; // Erro técnico de servidor/banco
+    }
+}
+
 // exportando funções
 module.exports = {
-    insertEmpresa
+    insertEmpresa,
+    selectEmpresaById
 }

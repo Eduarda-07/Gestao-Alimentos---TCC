@@ -78,20 +78,19 @@ constraint check_dono check (
 
 create table tbl_categoria (
 id int auto_increment primary key,
-nome varchar(255) not null,
-descricao varchar(255)
+nome varchar(255) not null
 )
 
 create table tbl_alimentos (
 id int auto_increment primary key,
 nome varchar(150) not null,
-quantidade varchar(100) not null,
-data_de_validade date,
-descricao text,
-imagem varchar(255),
+quantidade int not null,
+data_de_validade date not null,
+descricao text not null,
+imagem text not null,
 id_empresa int not null,
 
-constraint fk_alimento_empresa foreign key (id_empresa) references tbl_empresa(id)
+constraint fk_alimento_empresa foreign key (id_empresa) references tbl_empresas(id)
 
 )
 
