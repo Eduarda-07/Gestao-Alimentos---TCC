@@ -11,7 +11,7 @@ const categoriaDAO = require('../../model/DAO/categoria')
 
 const inserirCategoria = async function (categoria, contentType){
     try {
-        if (String(contentType).toLowerCase() == 'aplication/js'){
+        if (String(contentType).toLowerCase() == 'application/json'){
             if (
                 categoria.nome == '' || categoria.nome == undefined || categoria.nome == null || categoria.nome.length > 255
             ) {
@@ -19,14 +19,17 @@ const inserirCategoria = async function (categoria, contentType){
                 
             } else {
                 let resultCategoria = await categoriaDAO.insertCategoria(categoria)
+                
 
                 if (resultCategoria) {
+                    
                     let dadosCategoria = {
                         status: true,
                         status_code: message.SUCCESS_CREATED_ITEM.status_code,
                         message: message.SUCCESS_CREATED_ITEM.message,
-                        categoria: result
+                        categoria: resultCategoria
                     }
+                    
                     return dadosCategoria
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL

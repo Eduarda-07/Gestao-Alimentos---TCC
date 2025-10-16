@@ -59,6 +59,7 @@ const controllerEmpresa = require('./controller/empresas/controllerEmpresa')
 const controllerLogin = require('./controller/login/login')
 const controllerCodigo = require('./controller/codigo/controllerCodigo')
 const controllerSenha = require('./controller/senha/atualizarSenha')
+const controllerCategoria = require('./controller/categoria/controllerCategoria')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -159,7 +160,7 @@ app.put('/v1/mesa-plus/apagar-codigo', cors(), bodyParserJSON, async function (r
 
 ///////////////////////////////////////////////////////NOVA SENHA///////////////////////////////////////////////////////////////////
 
-app.put('/v1/mesa-plus/nova-senha/', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/mesa-plus/nova-senha', cors(), bodyParserJSON, async function (request, response){
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
@@ -171,6 +172,84 @@ app.put('/v1/mesa-plus/nova-senha/', cors(), bodyParserJSON, async function (req
     response.json(result)
     console.log(dadosBody);
     
+})
+
+
+//////////////////////////////////////////////////CATEGORIA//////////////////////////////////////////////////////////////
+
+app.post('/v1/mesa-plus/categoria', cors(), bodyParserJSON, async function (request, response){
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCategoria.inserirCategoria(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+
+app.put('/v1/mesa-plus/categoria/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe o id da categoria pela url - params
+    let id = request.params.id
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCategoria.atualizarCategoria(id, dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/categoria', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCategoria.listarCategoria(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/categoria/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     //recebe o id da categoria pela url - params
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCategoria.buscarCategoria(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.delete('/v1/mesa-plus/categoria/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     //recebe o id da categoria pela url - params
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerCategoria.excluirCategoria(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
 })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
