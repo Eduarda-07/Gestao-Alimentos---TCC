@@ -9,7 +9,7 @@
 const message = require('../../modulo/config.js')
 
 
-const alimentoCatDAO = require('../../model/DAO/filme_genero.js')
+const alimentoCatDAO = require('../../model/DAO/alimento_categoria.js')
 
 //Função para tratar a inserção de um novo genero no DAO
 const inserirAlimentoCat = async function(alimentoCat, contentType){

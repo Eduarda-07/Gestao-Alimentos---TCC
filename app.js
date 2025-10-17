@@ -60,6 +60,7 @@ const controllerLogin = require('./controller/login/login')
 const controllerCodigo = require('./controller/codigo/controllerCodigo')
 const controllerSenha = require('./controller/senha/atualizarSenha')
 const controllerCategoria = require('./controller/categoria/controllerCategoria')
+const controllerAlimentos = require('./controller/alimentos/controllerAlimentos')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -250,6 +251,20 @@ app.delete('/v1/mesa-plus/categoria/:id', cors(), bodyParserJSON, async function
     response.status(result.status_code)
     response.json(result)
 
+})
+
+////////////////////////////////////////////////////ALIMENTOS/////////////////////////////////////////////////////////////////////
+
+app.post('/v1/mesa-plus/alimentos', cors(), bodyParserJSON, async function (request, response){
+     //recebe o content type da requisição
+     let contentType = request.headers['content-type']
+
+     //recebe do body da requisição os dados encaminhados
+     let dadosBody = request.body
+     let resultAlimentos = await controllerAlimentos.inserirAlimento(dadosBody, contentType)
+ 
+     response.status(resultAlimentos.status_code)
+     response.json(resultAlimentos)
 })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -19,11 +19,11 @@ const inserirAlimento = async function (alimento, contentType){
         if (String(contentType).toLocaleLowerCase() == 'application/json') {
             if (
                 alimento.nome             == "" || alimento.nome             == undefined || alimento.nome             == null || alimento.nome.length       > 150 ||
-                alimento.quantidade       == "" || alimento.quantidade       == undefined || alimento.quantidade       == null || isNaN(alimento.quantidade) <= 0   ||
+                alimento.quantidade       == "" || alimento.quantidade       == undefined || alimento.quantidade       == null || isNaN(alimento.quantidade) || Number(alimento.quantidade) <= 0 ||
                 alimento.data_de_validade == "" || alimento.data_de_validade == undefined || alimento.data_de_validade == null ||
                 alimento.descricao        == "" || alimento.descricao        == undefined || alimento.descricao        == null ||
                 alimento.imagem           == "" || alimento.imagem           == undefined || alimento.imagem           == null ||
-                alimento.id_empresa       == "" || alimento.id_empresa       == undefined || alimento.id_empresa       == null || isNaN(alimento.id_empresa) <= 0
+                alimento.id_empresa       == "" || alimento.id_empresa       == undefined || alimento.id_empresa       == null || isNaN(alimento.id_empresa) || Number(alimento.id_empresa) <= 0
             ) {
                 
                 return message.ERROR_REQUIRED_FIELD
@@ -39,26 +39,41 @@ const inserirAlimento = async function (alimento, contentType){
                 }
 
                 if (empresaExiste === null) {
+                     
                     return message.ERROR_NOT_FOUND
+                
                 }
 
-                resultAlimento = await alimentoDAO.inserirAlimento(alimento)
+                const resultAlimento = await alimentoDAO.insertAlimento(alimento)
 
                 if (resultAlimento) {
-                    if (resultAlimento.categorias && Array.isArray(resultAlimento.categorias)) {
+                    const resultadosCategorias = []
+                    if (alimento.categorias && Array.isArray(alimento.categorias)) {
                             
+                        
+
                         for(let categoria of alimento.categorias){
-                            if (categoria.id && !isNan(categoria.id)) {
-                                let alimentoCategoria = {
-                                    id_alimento : alimento.id,
+                            if (categoria.id && !isNaN(categoria.id)) {
+                                let alimentoCat = {
+                                    id_alimento : resultAlimento.id,
                                     id_categoria : categoria.id
                                 }
-                                await alimentoCatDAO.insertAlimentoCat(alimentoCategoria)
+                               const resultAlimentoCat =  await alimentoCatDAO.insertAlimentoCat(alimentoCat)
+
+                               resultadosCategorias.push(resultAlimentoCat)
                             } 
                         }
                     } 
 
-                    return message.SUCCESS_CREATED_ITEM
+                    let dados = {
+                        status: true,
+                        status_code: message.SUCCESS_CREATED_ITEM.status_code,
+                        message: message.SUCCESS_CREATED_ITEM.message,
+                        alimento: resultAlimento,
+                        categorias: resultadosCategorias
+                    }
+                    
+                    return dados
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL
                 }
@@ -73,5 +88,9 @@ const inserirAlimento = async function (alimento, contentType){
         return message.ERROR_INTERNAL_SERVER_CONTROLLER
 
     }
+}
+
+module.exports = {
+    inserirAlimento
 }
 

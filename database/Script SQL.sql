@@ -79,7 +79,7 @@ constraint check_dono check (
 create table tbl_categoria (
 id int auto_increment primary key,
 nome varchar(255) not null
-)
+);
 
 create table tbl_alimentos (
 id int auto_increment primary key,
@@ -92,7 +92,7 @@ id_empresa int not null,
 
 constraint fk_alimento_empresa foreign key (id_empresa) references tbl_empresas(id)
 
-)
+);
 
 create table tbl_alimento_categoria (
 id int auto_increment primary key,
