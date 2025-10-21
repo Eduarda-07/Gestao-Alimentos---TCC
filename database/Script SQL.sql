@@ -85,9 +85,10 @@ create table tbl_alimentos (
 id int auto_increment primary key,
 nome varchar(150) not null,
 quantidade int not null,
-data_de_validade date not null,
-descricao text not null,
-imagem text not null,
+peso int,
+data_de_validade date,
+descricao text,
+imagem text,
 id_empresa int not null,
 
 constraint fk_alimento_empresa foreign key (id_empresa) references tbl_empresas(id)
@@ -258,3 +259,72 @@ CALL deletar_ONGs((SELECT id FROM tbl_ONGs WHERE nome = 'Mundo Melhor'));
 
 -- Conferir se deletou
 SELECT * FROM vw_usuarios;
+
+
+------------------------------------------
+delimiter //
+create procedure inserir_alimentos(
+	in d.nome varchar(150) not null,
+	in d.quantidade int not null,
+    in d.peso int
+	in d.data_de_validade date not null,
+	in d.descricao text not null,
+	in d.imagem text not null
+)
+begin 
+	insert into tbl_alimentos(nome, quantidade, 
+    data_de_validade, descricao,imagem) values(
+    d.nome, d.quantidade, d.peso, d.data_de_validade, 
+    d.descricao, d.imagem);
+end //
+delimiter ;
+
+delimiter //
+create procedure alimentos_categorias(
+	in p_id_alimentos int,
+	in p_id_categorias int
+
+)
+begin 
+	insert into tbl_alimentos_categorias
+    (id_alimentos, id_categorias)
+    values (p_id_alimentos, p_id_categorias) 
+end //
+delimiter ;
+
+delimiter //
+create procedure inserir_categoria(
+	in p_nome int
+)
+begin 
+	insert into tbl_categorias
+    (nome)
+    values (p_nome) 
+end //
+delimiter ;
+
+--------------------------------------------------------
+
+delimiter //
+create procedure deletar_alimento (							
+	in d_id_alimentos int											
+)														
+begin													
+	delete from tbl_alimentos_categorias 
+    where id_alimentos = d_id_alimentos
+    delete from tbl_alimentos
+    where id = p_id_alimentos
+end //													
+delimiter ; 		
+
+delimiter //
+create procedure deletar_categoria (							
+	in d_id_categorias int											
+)														
+begin													
+	delete from tbl_alimentos_categorias 
+    where id_categorias = d_id_categorias
+    delete from tbl_categorias
+    where id = p_id_categorias
+end //													
+delimiter ;
