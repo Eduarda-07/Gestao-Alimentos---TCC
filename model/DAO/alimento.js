@@ -19,6 +19,7 @@ const insertAlimento = async function(alimento){
                 insert into tbl_alimentos(
                     nome,
                     quantidade,
+                    peso,
                     data_de_validade,
                     descricao,
                     imagem,
@@ -26,6 +27,7 @@ const insertAlimento = async function(alimento){
                 )
                 values(
                     '${alimento.nome}',
+                    '${alimento.peso}',
                     '${alimento.quantidade}',
                     '${alimento.data_de_validade}',
                     '${alimento.descricao}',
@@ -43,6 +45,7 @@ const insertAlimento = async function(alimento){
             return {
                 id: Number(idGerado), 
                 nome: alimento.nome,
+                peso: alimento.peso,
                 quantidade: alimento.quantidade,
                 data_validade: alimento.data_de_validade,
                 descricao: alimento.descricao,
@@ -56,8 +59,6 @@ const insertAlimento = async function(alimento){
        
         return false
     }
-
-   
 }
 
 // // função para atualizar um filme existente

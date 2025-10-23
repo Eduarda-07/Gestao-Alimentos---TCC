@@ -20,6 +20,7 @@ const inserirAlimento = async function (alimento, contentType){
             if (
                 alimento.nome             == "" || alimento.nome             == undefined || alimento.nome             == null || alimento.nome.length       > 150 ||
                 alimento.quantidade       == "" || alimento.quantidade       == undefined || alimento.quantidade       == null || isNaN(alimento.quantidade) || Number(alimento.quantidade) <= 0 ||
+                alimento.peso             == "" || alimento.peso             == undefined || alimento.peso             == null || alimento.nome.length       > 15 ||
                 alimento.data_de_validade == "" || alimento.data_de_validade == undefined || alimento.data_de_validade == null ||
                 alimento.descricao        == "" || alimento.descricao        == undefined || alimento.descricao        == null ||
                 alimento.imagem           == "" || alimento.imagem           == undefined || alimento.imagem           == null ||

@@ -85,7 +85,7 @@ create table tbl_alimentos (
 id int auto_increment primary key,
 nome varchar(150) not null,
 quantidade int not null,
-peso int,
+peso varchar (20),
 data_de_validade date,
 descricao text,
 imagem text,
