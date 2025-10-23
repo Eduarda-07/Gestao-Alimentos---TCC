@@ -27,8 +27,8 @@ const insertAlimento = async function(alimento){
                 )
                 values(
                     '${alimento.nome}',
-                    '${alimento.peso}',
                     '${alimento.quantidade}',
+                    '${alimento.peso}',
                     '${alimento.data_de_validade}',
                     '${alimento.descricao}',
                     '${alimento.imagem}',
@@ -56,7 +56,7 @@ const insertAlimento = async function(alimento){
           return false
  
     }catch (error){
-       
+       console.log(error);
         return false
     }
 }
@@ -111,66 +111,51 @@ const insertAlimento = async function(alimento){
 //     }
 // }
 
-// // função para retornar todos os filmes existentes
-// const selectAllFilme = async function(){
-//     try{
 
-//         //scriptSQL para retornar todos os dados
-//         let sql = 'select * from tbl_filme order by id desc'
+const selectAllAlimentos = async function(){
+    try{
 
-//         //executa o scriptSQL no banco de dados e aguarda o retorno dos dados 
-//         let result = await prisma.$queryRawUnsafe(sql)
+        //scriptSQL para retornar todos os dados
+        let sql = 'select * from tbl_alimentos'
 
-//         if(result)
-//             return result
-//         else
-//             return false
+        //executa o scriptSQL no banco de dados e aguarda o retorno dos dados 
+        let result = await prisma.$queryRawUnsafe(sql)
 
-//     }catch(error){
-//         return false
-//     }
-// }
+        if(result)
+            return result
+        else
+            return false
 
-// // função para buscar um filme pelo id
-// const selecByIdFilme = async function(id){
+    }catch(error){
+        return false
+    }
+}
+
+// função para buscar um filme pelo id
+const selecByIdAlimento = async function(id){
     
-//     try {
-//         let sql = `select * from tbl_filme where id = ${id}`
+    try {
+        let sql = `select * from tbl_alimento where id = ${id}`
 
-//         let result =  await prisma.$queryRawUnsafe(sql)
+        let result =  await prisma.$queryRawUnsafe(sql)
 
-//         if (result) {
-//             return result
-//         } else {
-//             return false
-//         }
-//     } catch (error) {
-//         return false
-//     }
+        if (result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
 
-// }
+}
 
-// const selectLastInsertId = async function(){
-//     try {
-//         let sql = `select id from tbl_filme order by id desc limit 1`
-
-//         let result =  await prisma.$queryRawUnsafe(sql) 
-//         if (result) {
-//             return result
-//         } else {
-//             return false
-//         }
-//     } catch (error) {
-//         return false
-//     }
-// }
 module.exports = {
     insertAlimento,
     // updateFilme,
     // deleteFilme,
-    // selectAllFilme,
-    // selecByIdFilme,
-    // selectLastInsertId
+    selectAllAlimentos,
+    selecByIdAlimento
 }
 
 

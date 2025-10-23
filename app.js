@@ -267,6 +267,15 @@ app.post('/v1/mesa-plus/alimentos', cors(), bodyParserJSON, async function (requ
      response.json(resultAlimentos)
 })
 
+
+app.get('/v1/mesa-plus/alimentos', cors(), bodyParserJSON, async function (request, response){
+
+    let resultAlimentos = await controllerAlimentos.listarAlimento()
+
+    response.status(resultAlimentos.status_code)
+    response.json(resultAlimentos)
+})
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
     console.log('API funcionando e aguardadndo requisições... Porta: 8080')

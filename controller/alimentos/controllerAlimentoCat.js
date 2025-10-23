@@ -39,6 +39,35 @@ const inserirAlimentoCat = async function(alimentoCat, contentType){
     }
 }
 
+//Função para retornar os generos relacionados a um filme
+const buscarCatPorAlimento = async function(idAlimento){
+    try {
+        if(idAlimento == '' || idAlimento == undefined || idAlimento == null || isNaN(idAlimento) || idAlimento <=0){
+            return message.ERROR_REQUIRED_FIELD //400
+        }else{
+            let dadosAlimentoCat = {} 
+
+            let result = await alimentoCatDAO.selectCatByIdAlimento(parseInt(idAlimento))
+            
+            if(result && Array.isArray(result) && result.length > 0){
+               
+                dadosAlimentoCat.status = true
+                dadosAlimentoCat.status_code = 200
+                dadosAlimentoCat.categoria = result 
+
+                return dadosAlimentoCat // 200
+            }else{
+           
+                return message.ERROR_NOT_FOUND // 404
+            }
+        }
+
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
 module.exports = {
-    inserirAlimentoCat
+    inserirAlimentoCat,
+    buscarCatPorAlimento
 }

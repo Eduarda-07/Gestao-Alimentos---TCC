@@ -62,10 +62,44 @@ const inserirEmpresa = async function (empresa, contentType) {
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
+}
+
+const buscarEmpresa = async function(id){
+    try {
+        if ( id === ""   ||   id === undefined || id === null  || isNaN(id)  || id <= 0 ) {
+            
+            return message.ERROR_REQUIRED_FIELD //400
+
+        } else {
+            let dadosEmpresa = {}
+
+            let result = await empresaDAO.selectEmpresaById(parseInt(id))
+
+            if(result != false || typeof(result) == 'object'){
+
+                if(result.length > 0){
+
+                    dadosEmpresa.status = true
+                    dadosEmpresa.status_code = 200
+                    dadosEmpresa.empresa = result
     
+                    return dadosEmpresa
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+          
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        // console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
 }
 
 // exportando funções
 module.exports = {
-    inserirEmpresa
+    inserirEmpresa,
+    buscarEmpresa
 }

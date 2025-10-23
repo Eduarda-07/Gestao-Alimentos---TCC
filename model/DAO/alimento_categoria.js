@@ -116,14 +116,14 @@ const selectByIdFilmeGenero = async function(id){
 }
 
 //Função para retornar os filmes pelo genero
-const selectFilmeByIdGenero = async function(idGenero){
+const selectFilmeByIdGenero = async function(idCategoria){
   try {
       let sql = `select * from tbl_filme 
-                                            inner join tbl_filme_genero
-                                              on tbl_filme.id = tbl_filme_genero.id_filme
-                                            inner join tbl_genero
-                                              on tbl_genero.id = tbl_filme_genero.id_genero
-                  where tbl_filme_genero.id_genero = ${idGenero}`
+                                            inner join tbl_alimento_categoria
+                                              on tbl_alimento.id = tbl_alimento_categoria.id_alimento
+                                            inner join tbl_categorias
+                                              on tbl_categorias.id = tbl_alimento_categoria.id_categoria
+                  where tbl_alimento_categoria.id_categoria = ${idCategoria}`
 
        let result = await prisma.$queryRawUnsafe(sql)
      
@@ -140,12 +140,12 @@ const selectFilmeByIdGenero = async function(idGenero){
 }
 
 //Função para retornar os generos pelo Filme
-const selectGeneroByIdFilme = async function(idFilme){
+const selectCatByIdAlimento = async function(idAlimento){
  try {
-      let sql = `select tbl_genero.* from tbl_filme_genero
-                                inner join tbl_genero
-                                  on tbl_genero.id_genero = tbl_filme_genero.id_genero
-                  where tbl_filme_genero.id_filme = ${idFilme}`
+      let sql = `select tbl_categorias. * from tbl_alimentos
+                                inner join tbl_categorias
+                                  on tbl_categorias.id = tbl_alimento_categoria.id_categoria
+                  where tbl_alimento_categoria.id_alimento = ${idAlimento}`
                   
       let result = await prisma.$queryRawUnsafe(sql)
     if (result && result.length > 0)
@@ -166,5 +166,5 @@ module.exports = {
     selectAllFilmeGenero,
     selectByIdFilmeGenero,
     selectFilmeByIdGenero,
-    selectGeneroByIdFilme
+    selectCatByIdAlimento
 } 
