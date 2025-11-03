@@ -75,21 +75,22 @@ const buscarEmpresa = async function(id){
 
             let result = await empresaDAO.selectEmpresaById(parseInt(id))
 
-            if(result != false || typeof(result) == 'object'){
-
-                if(result.length > 0){
-
-                    dadosEmpresa.status = true
-                    dadosEmpresa.status_code = 200
-                    dadosEmpresa.empresa = result
-    
-                    return dadosEmpresa
-                }else{
-                    return message.ERROR_NOT_FOUND //404
-                }
-          
+            if(result && typeof(result) === 'object'){ // Se encontrou o objeto
+                // Não precisa de .length
+                
+                dadosEmpresa.status = true
+                dadosEmpresa.status_code = 200
+                // O resultado é o objeto da empresa (não um array)
+                dadosEmpresa.empresa = result 
+ 
+                return dadosEmpresa
             }else{
-                return message.ERROR_INTERNAL_SERVER_MODEL //500
+                // Se o resultado for null (404) ou false (500)
+                if (result === null) {
+                    return message.ERROR_NOT_FOUND //404
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL //500 (Erro no DAO)
+                }
             }
         }
     } catch (error) {

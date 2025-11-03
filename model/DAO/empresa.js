@@ -43,12 +43,32 @@ const insertEmpresa = async function(empresa) {
     }
 }
 
-// Função para buscar empresa por ID (simplesmente para checar se existe)
+// Função para listar todas as empresas
+const selectAllEmpresas = async function(){
+    try{
+        //scriptSQL para retornar todos os dados
+        let sql = 'select * from tbl_empresas'
+
+        //executa o scriptSQL no banco de dados e aguarda o retorno dos dados 
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result)
+            return result
+        else
+            return false
+
+    }catch(error){
+        return false
+    }
+}
+
+// Função para buscar empresa por ID
 const selectEmpresaById = async function(id) {
     try {
-        const sql = `SELECT id FROM tbl_empresas WHERE id = ${id}`;
+        const sql = `SELECT * FROM tbl_empresas WHERE id = ${id}`;
         
         const result = await prisma.$queryRawUnsafe(sql);
+        console.log(result);
         
         if (result && result.length > 0) {
             return result[0]; // Retorna a empresa (ou apenas o ID)
@@ -64,5 +84,6 @@ const selectEmpresaById = async function(id) {
 // exportando funções
 module.exports = {
     insertEmpresa,
+    selectAllEmpresas,
     selectEmpresaById
 }
