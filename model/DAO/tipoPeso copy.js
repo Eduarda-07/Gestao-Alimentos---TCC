@@ -1,5 +1,5 @@
 /************************************************************************************************
- * objetivo: criar a comunicação com o banco de dados, para fazer o CRUD de tipo de peso
+ * objetivo: criar a comunicação com o banco de dados, para fazer o CRUD de peso
  * data: 04/11/25
  * autor: Eduarda Silva
  * versão: 1.1
@@ -12,10 +12,10 @@ const e = require('cors')
 // instancia a biblioteca do prisma/client
 const prisma = new PrismaClient()
 
-// função para inserir um novo tipo
-const insertTipoPeso = async function(tipo) {
+
+const insertPeso = async function(peso) {
     try {
-        let result = await prisma.$executeRaw `INSERT INTO tbl_tipo_peso (tipo) VALUES (${tipo.tipo})`
+        let result = await prisma.$executeRaw `INSERT INTO tbl_peso (peso) VALUES (${peso.peso})`
         
         if (result > 0){
             let ultimoId =  await prisma.$queryRawUnsafe(`SELECT LAST_INSERT_ID() AS id`)
@@ -24,7 +24,7 @@ const insertTipoPeso = async function(tipo) {
 
             return {
                 id: Number(idGerado), 
-                tipo: tipo.tipo
+                peso: peso.peso
             }
           
         }else{
@@ -38,19 +38,19 @@ const insertTipoPeso = async function(tipo) {
     }
 }
 
-// função para atualizar um tipo de peso
-const updateTipoPeso = async function(tipo) {
+
+const updatePeso = async function(peso) {
     try {
-        let sql = `UPDATE tbl_tipo_peso
-                   SET tipo = '${tipo.tipo}'
-                   WHERE id = ${tipo.id}`
+        let sql = `UPDATE tbl_peso
+                   SET tipo = '${peso.peso}'
+                   WHERE id = ${peso.id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
         if (result > 0){
 
             return {
-                tipo: tipo.tipo
+                peso: peso.peso
             }
            
         }else{
@@ -116,8 +116,8 @@ const selectTipoPesoById = async function(id) {
 
 // exporta as funções para uso externo
 module.exports = {
-    insertTipoPeso,
-    updateTipoPeso,
+    insertTipoPeso: insertPeso,
+    updateTipoPeso: updatePeso,
     deleteTipoPeso,
     selectAllTipoPeso,
     selectTipoPesoById
