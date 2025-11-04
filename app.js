@@ -90,6 +90,14 @@ app.post('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (reques
     response.json(resultEmpresa)
 })
 
+app.get('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (request, response) {
+    
+    let resultEmpresa =  await controllerEmpresa.listarEmpresas()
+
+    response.status(resultEmpresa.status_code)
+    response.json(resultEmpresa)
+})
+
 ///////////////////////////////////////////////////////ONGS///////////////////////////////////////////////////////////////////
 
 app.post('/v1/mesa-plus/ong', cors(), bodyParserJSON, async function (request, response){
