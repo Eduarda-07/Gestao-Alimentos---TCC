@@ -61,6 +61,7 @@ const controllerCodigo = require('./controller/codigo/controllerCodigo')
 const controllerSenha = require('./controller/senha/atualizarSenha')
 const controllerCategoria = require('./controller/categoria/controllerCategoria')
 const controllerAlimentos = require('./controller/alimentos/controllerAlimentos')
+const controllerTipoPeso = require('./controller/tipo de peso/controllerTipoPeso')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -282,6 +283,81 @@ app.get('/v1/mesa-plus/alimentos', cors(), bodyParserJSON, async function (reque
 
     response.status(resultAlimentos.status_code)
     response.json(resultAlimentos)
+})
+
+//////////////////////////////////////////////////TIPO PESO//////////////////////////////////////////////////////////////
+
+app.post('/v1/mesa-plus/tipoPeso', cors(), bodyParserJSON, async function (request, response){
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerTipoPeso.inserirTipoPeso(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+
+app.put('/v1/mesa-plus/tipoPeso/:id', cors(), bodyParserJSON, async function (request, response){
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    
+    let id = request.params.id
+  
+    let dadosBody = request.body
+    let result = await controllerTipoPeso.atualizarTipoPeso(id, dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/tipoPeso', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    let result = await controllerTipoPeso.listarTipoPeso()
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/tipoPeso/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerTipoPeso.buscarTipoPeso(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.delete('/v1/mesa-plus/tipoPeso/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerTipoPeso.excluirTipoPeso(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
 })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
