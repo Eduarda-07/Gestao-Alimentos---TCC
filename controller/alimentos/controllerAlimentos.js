@@ -10,11 +10,13 @@ const message = require('../../modulo/config')
 const alimentoDAO = require('../../model/DAO/alimento')
 const alimentoCatDAO = require('../../model/DAO/alimento_categoria')
 const empresaDAO = require ('../../model/DAO/empresa')
+const tipoDAO = require ('../../model/DAO/tipoPeso')
 
 
 const controllerAlimentoCat  = require('./controllerAlimentoCat')
 
 const controllerEmpresa  = require('../empresas/controllerEmpresa')
+const controllerTipoPeso  = require('../tipo de peso/controllerTipoPeso')
 
 const inserirAlimento = async function (alimento, contentType){
     try {
@@ -22,7 +24,8 @@ const inserirAlimento = async function (alimento, contentType){
             if (
                 alimento.nome             == "" || alimento.nome             == undefined || alimento.nome             == null || alimento.nome.length       > 150 ||
                 alimento.quantidade       == "" || alimento.quantidade       == undefined || alimento.quantidade       == null || isNaN(alimento.quantidade) || Number(alimento.quantidade) <= 0 ||
-                alimento.peso             == "" || alimento.peso             == undefined || alimento.peso             == null || alimento.nome.length       > 15 ||
+                alimento.peso             == "" || alimento.peso             == undefined || alimento.peso             == null || isNaN(alimento.peso) || Number(alimento.peso) <= 0 ||
+                alimento.id_tipo_peso     == "" || alimento.id_tipo_peso     == undefined || alimento.id_tipo_peso     == null || isNaN(alimento.id_tipo_peso) || Number(alimento.id_tipo_peso) <= 0 ||
                 alimento.data_de_validade == "" || alimento.data_de_validade == undefined || alimento.data_de_validade == null ||
                 alimento.descricao        == "" || alimento.descricao        == undefined || alimento.descricao        == null ||
                 alimento.imagem           == "" || alimento.imagem           == undefined || alimento.imagem           == null ||
@@ -33,7 +36,21 @@ const inserirAlimento = async function (alimento, contentType){
 
             } else {
                     
-                const idEmpresa = alimento.id_empresa;
+                const idTipoPeso = Number(alimento.id_tipo_peso);
+                
+                let tipoExiste = await tipoDAO.selectTipoPesoById(idTipoPeso);
+
+                if (tipoExiste === false) {
+                    return message.ERROR_INTERNAL_SERVER_MODEL
+                }
+
+                if (tipoExiste === null) {
+                     
+                    return message.ERROR_NOT_FOUND
+                
+                }
+
+                const idEmpresa = Number(alimento.id_empresa);
                 
                 let empresaExiste = await empresaDAO.selectEmpresaById(idEmpresa);
 
@@ -46,6 +63,7 @@ const inserirAlimento = async function (alimento, contentType){
                     return message.ERROR_NOT_FOUND
                 
                 }
+
 
                 const resultAlimento = await alimentoDAO.insertAlimento(alimento)
 
@@ -123,6 +141,20 @@ const listarAlimento = async function(){
                         // console.log(dadosEmpresa)
                         delete itemAlimento.id_empresa  
                         itemAlimento.empresa = null 
+                    }
+
+                    const idTipoPeso = parseInt(itemAlimento.id_tipo_peso)
+                    
+                    let dadosTipo = await controllerTipoPeso.buscarTipoPeso(idTipoPeso)
+
+                    if (dadosTipo && dadosTipo.tipo) {
+                        itemAlimento.tipoPeso = dadosTipo.tipo
+                         //Remover o id do JSON
+                        delete itemAlimento.id_tipo_peso  
+                    } else {
+                
+                        delete itemAlimento.id_tipo_peso  
+                        itemAlimento.tipoPeso = null 
                     }
 
                     let dadosCategoria = await controllerAlimentoCat.buscarCatPorAlimento(itemAlimento.id)
