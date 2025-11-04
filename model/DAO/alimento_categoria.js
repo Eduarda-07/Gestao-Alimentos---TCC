@@ -1,6 +1,6 @@
 /*******************************************************************************************************
- * Objetivo:  criar a comunicação com o banco de dados, para fazer o CROUD de filmes
- * Data: 13/06/2025
+ * Objetivo:  criar a comunicação com o banco de dados, para fazer o CROUD de alimentoCategoria
+ * Data: 30/10/2025
  * Autor: Eduara
  * Versão: 1.0
  ******************************************************************************************************/
@@ -142,13 +142,16 @@ const selectFilmeByIdGenero = async function(idCategoria){
 //Função para retornar os generos pelo Filme
 const selectCatByIdAlimento = async function(idAlimento){
  try {
-      let sql = `select tbl_categorias. * from tbl_alimentos
-                                inner join tbl_categorias
-                                  on tbl_categorias.id = tbl_alimento_categoria.id_categoria
-                  where tbl_alimento_categoria.id_alimento = ${idAlimento}`
-                  
+      let sql = `SELECT tbl_categoria.* FROM tbl_alimento_categoria 
+                   INNER JOIN tbl_categoria
+                     ON tbl_categoria.id = tbl_alimento_categoria.id_categoria
+                   WHERE tbl_alimento_categoria.id_alimento = ${idAlimento}`
+
       let result = await prisma.$queryRawUnsafe(sql)
+      console.log(result);
+
     if (result && result.length > 0)
+      
         return result
     else 
         return false

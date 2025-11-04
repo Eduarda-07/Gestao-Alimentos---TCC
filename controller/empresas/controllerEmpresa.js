@@ -75,12 +75,10 @@ const buscarEmpresa = async function(id){
 
             let result = await empresaDAO.selectEmpresaById(parseInt(id))
 
-            if(result && typeof(result) === 'object'){ // Se encontrou o objeto
-                // Não precisa de .length
+            if(result && typeof(result) === 'object'){
                 
                 dadosEmpresa.status = true
                 dadosEmpresa.status_code = 200
-                // O resultado é o objeto da empresa (não um array)
                 dadosEmpresa.empresa = result 
  
                 return dadosEmpresa

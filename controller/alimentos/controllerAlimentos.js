@@ -111,35 +111,26 @@ const listarAlimento = async function(){
                 //Precisamos utilizar o for of, pois o foreach não consegue trabalhar com requisições async com await
                 for(const itemAlimento of resultAlimento){
             
-                    const idEmpresa = parseInt(itemAlimento.id_empresa);
-    
-                    // 1. Loga o ID que está sendo buscado
-                    console.log("Buscando empresa para ID:", idEmpresa); 
+                    const idEmpresa = parseInt(itemAlimento.id_empresa)
                     
-                    let dadosEmpresa = await controllerEmpresa.buscarEmpresa(idEmpresa);
-
-                    // 2. Loga o retorno para ver por que não atende o IF
-                    console.log("Retorno de dadosEmpresa:", dadosEmpresa);
-
+                    let dadosEmpresa = await controllerEmpresa.buscarEmpresa(idEmpresa)
 
                     if (dadosEmpresa && dadosEmpresa.empresa) {
                         itemAlimento.empresa = dadosEmpresa.empresa
                          //Remover o id do JSON
                         delete itemAlimento.id_empresa  
                     } else {
-                        console.log(dadosEmpresa);
+                        // console.log(dadosEmpresa)
                         delete itemAlimento.id_empresa  
-                        itemAlimento.empresa = null // Garante que a propriedade exista, mesmo vazia
+                        itemAlimento.empresa = null 
                     }
 
-                        
                     let dadosCategoria = await controllerAlimentoCat.buscarCatPorAlimento(itemAlimento.id)
-                    console.log(dadosCategoria);
-                    
+                    console.log(`Dados categorias: ${dadosCategoria.categoria}`);
 
                     // verificando se retorna array e se não é false
-                   if (dadosCategoria && Array.isArray(dadosCategoria.categorias)) {
-                        itemAlimento.categorias = dadosCategoria.categorias // <-- CORREÇÃO: Usar 'categorias'
+                   if (dadosCategoria && dadosCategoria.status_code == 200 && Array.isArray(dadosCategoria.categoria)){
+                        itemAlimento.categorias = dadosCategoria.categoria
                     } else {
                         itemAlimento.categorias = []
                     }

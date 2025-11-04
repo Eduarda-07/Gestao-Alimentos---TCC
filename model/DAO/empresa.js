@@ -68,7 +68,7 @@ const selectEmpresaById = async function(id) {
         const sql = `SELECT * FROM tbl_empresas WHERE id = ${id}`;
         
         const result = await prisma.$queryRawUnsafe(sql);
-        console.log(result);
+        // console.log(result);
         
         if (result && result.length > 0) {
             return result[0]; // Retorna a empresa (ou apenas o ID)
