@@ -158,7 +158,7 @@ const listarAlimento = async function(){
                     }
 
                     let dadosCategoria = await controllerAlimentoCat.buscarCatPorAlimento(itemAlimento.id)
-                    console.log(`Dados categorias: ${dadosCategoria.categoria}`);
+                    
 
                     // verificando se retorna array e se não é false
                    if (dadosCategoria && dadosCategoria.status_code == 200 && Array.isArray(dadosCategoria.categoria)){
@@ -187,77 +187,7 @@ const listarAlimento = async function(){
     }
 }
 
-// função para tratar o retorno de um filme filtrando pelo ID do DAO
-// const buscarFilme = async function(id){
 
-// try {
-
-//     if ( id === ""   ||   id === undefined || id === null  || isNaN(id)  || id <= 0 ) {
-        
-//         return message.ERROR_REQUIRED_FIELD //400
-
-//     } else {
-
-//         let arrayFilmes= []
-//         let dadosFilme = {}
-
-//         let resultFilme= await filmeDAO.selecByIdFilme(parseInt(id))
-
-//         if(resultFilme != false || typeof(resultFilme) == 'object'){
-
-//             if(resultFilme.length > 0){
-
-//                 dadosFilme.status = true
-//                 dadosFilme.status_code = 200
-//                 for(const itemFilme of resultFilme){
-//                     /* Monta o objeto da classificação para retornar no Filme */
-//                         //Busca os dados da classificação na controller de classificacao
-//                         let dadosClassificacao = await controllerClassificacao.buscarClassificacao(itemFilme.id_classificacao)
-//                         //Adiciona um atributo classificação no JSON de filmes e coloca os dados da classificação
-//                         itemFilme.classificacao = dadosClassificacao.classificacao
-//                         //Remover o id do JSON
-//                         delete itemFilme.id_classificacao
-                    
-
-//                         let dadosIdioma = await controllerIdioma.buscarIdioma(itemFilme.id_idioma)
-//                         itemFilme.idioma = dadosIdioma.idioma
-//                         delete itemFilme.id_idioma
-
-//                         let dadosNacionalidade = await controllerNacionalidade.buscarNacionalidade(itemFilme.id_nacionalidade)
-//                         itemFilme.nacionalidade = dadosNacionalidade.nacionalidade
-//                         delete itemFilme.id_nacionalidade
-
-//                             // fazendo interação com a tbl_filme_genero
-//                         let dadosGenero = await controllerFilmeGenero.buscarGeneroPorFilme(itemFilme.id)
-//                         // verificando se retorna array e se não é false
-//                         if (dadosGenero && Array.isArray(dadosGenero.genero)) {
-//                         itemFilme.genero = dadosGenero.genero
-//                         } else {
-//                         //se for false retorna um array vazio 
-//                         itemFilme.genero = []
-//                         }
-
-
-//                     //Adiciona em um novo array o JSON de filmes com a sua nova estrutura de dados
-//                     arrayFilmes.push(itemFilme)
- 
-//                 }
-//                 dadosFilme.films = arrayFilmes
-
-//                 return dadosFilme
-//             }else{
-//                 return message.ERROR_NOT_FOUND //404
-//             }
-      
-//         }else{
-//             return message.ERROR_INTERNAL_SERVER_MODEL //500
-//         }
-//     }
-// } catch (error) {
-//     console.log(error)
-//     return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
-// }
-// }
 
 module.exports = {
     inserirAlimento,

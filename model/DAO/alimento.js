@@ -135,7 +135,6 @@ const selectAllAlimentos = async function(){
     }
 }
 
-// função para buscar um filme pelo id
 const selecByIdAlimento = async function(id){
     
     try {
@@ -156,8 +155,6 @@ const selecByIdAlimento = async function(id){
 
 module.exports = {
     insertAlimento,
-    // updateFilme,
-    // deleteFilme,
     selectAllAlimentos,
     selecByIdAlimento
 }

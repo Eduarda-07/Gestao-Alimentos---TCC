@@ -310,12 +310,12 @@ create procedure deletar_alimento (
 	in d_id_alimentos int											
 )														
 begin													
-	delete from tbl_alimentos_categorias 
-    where id_alimentos = d_id_alimentos
+	delete from tbl_alimento_categoria
+    where id_alimento = d_id_alimentos;
     delete from tbl_alimentos
-    where id = p_id_alimentos
+    where id = d_id_alimentos;
 end //													
-delimiter ; 		
+delimiter ; 	
 
 delimiter //
 create procedure deletar_categoria (							
