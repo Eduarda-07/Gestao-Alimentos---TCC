@@ -14,32 +14,9 @@ const prisma = new PrismaClient()
 
 const selectAlimentoCat = async function(id_categoria){
     try{
-        let sqlBase = `
-                   SELECT * from vw_filtrar_categoria
-                   `
 
-        let params = []
-        let where = []
-           
-         // Adiciona a condição de categoria se ela for verdadeira
-        if (id_categoria) {
-            // adiciona a continuação da sintase mySQL para categoria
-            // ? é o valor que do id mandado que foi inserido na lista de params
-            where.push(`tbl_categorias.id = ?`)
-            params.push(Number(id_categoria))
-        }
-        
-               
-        if (where.length > 0) {
-            sqlBase += ` WHERE ` + where
-        }
+        let result = await prisma.$queryRaw` CALL filtrar_alimentos_categoria(${id_categoria});`
 
-        sqlBase += ` ORDER BY tbl_alimentos.id DESC`
-      
-        // ...params é o prisma o valor da lista para ? 
-        let result = await prisma.$queryRaw(sqlBase, ...params)
-
-    
 
         if(result){
             return result

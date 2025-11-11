@@ -165,7 +165,7 @@ const buscarCategoria = async function(id){
 
             let dadosCategoria = {}
 
-            let result= await categoriaDAO.selectCategoriaById(parseInt(id))
+            let result = await categoriaDAO.selectCategoriaById(parseInt(id))
 
             if(result != false || typeof(result) == 'object'){
 

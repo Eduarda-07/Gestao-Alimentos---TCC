@@ -62,6 +62,7 @@ const controllerSenha = require('./controller/senha/atualizarSenha')
 const controllerCategoria = require('./controller/categoria/controllerCategoria')
 const controllerAlimentos = require('./controller/alimentos/controllerAlimentos')
 const controllerTipoPeso = require('./controller/tipo de peso/controllerTipoPeso')
+const controllerFiltros = require('./controller/filtros/controllerFiltros')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -94,6 +95,22 @@ app.post('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (reques
 app.get('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (request, response) {
     
     let resultEmpresa =  await controllerEmpresa.listarEmpresas()
+
+    response.status(resultEmpresa.status_code)
+    response.json(resultEmpresa)
+})
+
+app.get('/v1/mesa-plus/empresa/:id', cors(), bodyParserJSON, async function (request, response) {
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+
+    let resultEmpresa =  await controllerEmpresa.buscarEmpresa(id, dadosBody, contentType)
 
     response.status(resultEmpresa.status_code)
     response.json(resultEmpresa)
@@ -360,6 +377,23 @@ app.delete('/v1/mesa-plus/tipoPeso/:id', cors(), bodyParserJSON, async function 
 
 })
 
+//////////////////////////////////////////////////FILTROS//////////////////////////////////////////////////////////////
+
+app.get('/v1/mesa-plus/filtroCat/:id', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerFiltros.buscarAlimentoCat(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
     console.log('API funcionando e aguardadndo requisições... Porta: 8080')
