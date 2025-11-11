@@ -30,7 +30,26 @@ const selectAlimentoCat = async function(id_categoria){
     }
 }
 
+const selectAlimentoEmpresa = async function(id_empresa){
+    try{
+
+        let result = await prisma.$queryRaw` CALL filtrar_alimentos_empresa(${id_empresa});`
+
+
+        if(result){
+            return result
+        } else{
+            return false
+        }
+        
+    }catch(error){
+        console.log(error)
+        return false
+    }
+}
+
 
 module.exports = {
-    selectAlimentoCat
+    selectAlimentoCat,
+    selectAlimentoEmpresa
 }

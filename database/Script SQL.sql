@@ -328,3 +328,98 @@ begin
     where id = p_id_categorias
 end //													
 delimiter ;
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE filtrar_alimentos_categoria (
+    IN id_categoria_filtro INT
+)
+BEGIN
+    SELECT 
+        a.id AS id_alimento, 
+        a.nome AS nome_alimento, 
+        a.quantidade AS quantidade, 
+        a.peso AS peso,
+        a.id_tipo_peso AS id_tipo_peso, 
+        a.data_de_validade AS data_de_validade, 
+        a.descricao AS descricao, 
+        a.imagem AS imagem, 
+        a.id_empresa AS id_empresa, 
+        e.nome AS nome_empresa, 
+        e.foto AS foto_empresa, 
+        c.nome AS nome_categoria
+    FROM 
+        tbl_alimentos a
+    
+    -- 1. JOIN com a tabela de relacionamento (usaremos o filtro aqui)
+    JOIN 
+        tbl_alimento_categoria ac ON ac.id_alimento = a.id
+    
+    -- 2. JOIN com a tabela de categoria (necessário para pegar o nome da categoria, c.nome)
+    JOIN 
+        tbl_categoria c ON c.id = ac.id_categoria
+    
+    -- 3. JOIN com a tabela de empresa (para obter os detalhes)
+    JOIN 
+        tbl_empresas e ON e.id = a.id_empresa 
+    
+    -- O FILTRO é aplicado na coluna id_categoria da tabela de relacionamento (ac)
+    WHERE 
+        ac.id_categoria = id_categoria_filtro
+        
+	ORDER BY a.id desc;
+END //
+
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE filtrar_alimentos_empresa (
+    IN id_empresa_filtro INT
+)
+BEGIN
+    SELECT 
+        a.id AS id_alimento, 
+        a.nome AS nome_alimento, 
+        a.quantidade AS quantidade, 
+        a.peso AS peso,
+        a.id_tipo_peso AS id_tipo_peso, 
+        t.tipo AS tipoPeso,
+        a.data_de_validade AS data_de_validade, 
+        a.descricao AS descricao, 
+        a.imagem AS imagem, 
+        a.id_empresa AS id_empresa, 
+        e.nome AS nome_empresa, 
+        e.foto AS foto_empresa, 
+        c.nome AS nome_categoria
+    FROM 
+        tbl_alimentos a
+    
+    -- 1. JOIN com a tabela de relacionamento (usaremos o filtro aqui)
+    JOIN 
+        tbl_alimento_categoria ac ON ac.id_alimento = a.id
+    
+    -- 2. JOIN com a tabela de categoria (necessário para pegar o nome da categoria, c.nome)
+    JOIN 
+        tbl_categoria c ON c.id = ac.id_categoria
+    
+    -- 3. JOIN com a tabela de empresa (para obter os detalhes)
+    JOIN 
+        tbl_empresas e ON e.id = a.id_empresa 
+        
+	-- 3. JOIN com a tabela de tipoPeso (para obter os detalhes)
+    JOIN 
+        tbl_tipo_peso t ON t.id = a.id_tipo_peso
+    
+    -- O FILTRO é aplicado na coluna id_categoria da tabela de relacionamento (ac)
+    WHERE 
+        ac.id_categoria = id_empresa_filtro
+        
+	ORDER BY a.id desc;
+END //
+
+DELIMITER ;

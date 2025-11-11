@@ -394,6 +394,22 @@ app.get('/v1/mesa-plus/filtroCat/:id', cors(), bodyParserJSON, async function (r
     response.json(result)
 
 })
+
+app.get('/v1/mesa-plus/empresaAlimento/:id', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerFiltros.buscarEmpresaAlimentos(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
     console.log('API funcionando e aguardadndo requisições... Porta: 8080')
