@@ -41,7 +41,25 @@ const insertUsuario = async function(usuario) {
     }
 }
 
+const selectUsuarioById = async function(id) {
+    try {
+        const sql = `SELECT * FROM tbl_usuarios WHERE id = ${id}`;
+        
+        const result = await prisma.$queryRawUnsafe(sql);
+        // console.log(result);
+        
+        if (result && result.length > 0) {
+            return result[0]
+        } else {
+            return null 
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 // exportando funções
 module.exports = {
-    insertUsuario
+    insertUsuario,
+    selectUsuarioById
 }

@@ -78,6 +78,22 @@ app.post('/v1/mesa-plus/usuario', cors(), bodyParserJSON, async function (reques
      response.json(resultUsuario)
 })
 
+app.get('/v1/mesa-plus/usuario/:id', cors(), bodyParserJSON, async function (request, response) {
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+
+    let resultUsuario =  await controllerUsuarios.buscarUsuario(id, dadosBody, contentType)
+
+    response.status(resultUsuario.status_code)
+    response.json(resultUsuario)
+})
+
 ////////////////////////////////////////////////////EMPRESAS//////////////////////////////////////////////////////////////////
 
 app.post('/v1/mesa-plus/empresa', cors(), bodyParserJSON, async function (request, response){
