@@ -42,7 +42,26 @@ const insertOng = async function(ong) {
     }
 }
 
+const selectOngById = async function(id) {
+    try {
+        const sql = `SELECT * FROM tbl_ongs WHERE id = ${id}`;
+        
+        const result = await prisma.$queryRawUnsafe(sql);
+        // console.log(result);
+        
+        if (result && result.length > 0) {
+            return result[0]
+        } else {
+            return null 
+        }
+    } catch (error) {
+        return false
+    }
+}
+
+
 // exportando funções
 module.exports = {
-    insertOng
+    insertOng,
+    selectOngById
 }

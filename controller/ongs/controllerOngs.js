@@ -60,7 +60,41 @@ const inserirOng = async function (ong, contentType) {
     }
 }
 
+const buscarOng = async function(id){
+    try {
+        if ( id === ""   ||   id === undefined || id === null  || isNaN(id)  || id <= 0 ) {
+            
+            return message.ERROR_REQUIRED_FIELD //400
+
+        } else {
+            let dadosOng = {}
+
+            let result = await ongDAO.selectOngById(parseInt(id))
+
+            if(result && typeof(result) === 'object'){
+                
+                dadosOng.status = true
+                dadosOng.status_code = 200
+                dadosOng.ong = result 
+ 
+                return dadosOng
+            }else{
+                // Se o resultado for null (404) ou false (500)
+                if (result === null) {
+                    return message.ERROR_NOT_FOUND //404
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL //500 (Erro no DAO)
+                }
+            }
+        }
+    } catch (error) {
+        // console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
 // exportando funções
 module.exports = {
-    inserirOng
+    inserirOng,
+    buscarOng
 }

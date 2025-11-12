@@ -130,6 +130,22 @@ app.post('/v1/mesa-plus/ong', cors(), bodyParserJSON, async function (request, r
     response.json(resultOng)
 })
 
+app.get('/v1/mesa-plus/ong/:id', cors(), bodyParserJSON, async function (request, response) {
+    
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+
+    let resultOng =  await controllerOngs.buscarOng(id, dadosBody, contentType)
+
+    response.status(resultOng.status_code)
+    response.json(resultOng)
+})
+
 ///////////////////////////////////////////////////////LOGIN///////////////////////////////////////////////////////////////////
 
 app.post('/v1/mesa-plus/login', cors(), bodyParserJSON, async function (request, response){
