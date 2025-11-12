@@ -130,16 +130,7 @@ for each row
 begin											
 	set new.data_modificacao = now();			
 end //											
-delimiter ; 									
-												
-delimiter //									
-create trigger trg_update_ongs					
-before update on tbl_ongs						
-for each row								
-begin											
-	set new.data_modificacao = now();			
-end //											
-delimiter ; 
+delimiter ; 						
 
 --	--	--	--	--	--	--	--	--	--	--	--	--
 
@@ -191,11 +182,6 @@ delimiter ;
 						 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-
-ALTER TABLE tbl_usuarios
-ADD COLUMN token_recuperacao VARCHAR(255),
-ADD COLUMN token_expiracao DATETIME;
-
 -----------------------------------------------------
 
 -- deletar o usuario sem interferencia da chave estrageira 
@@ -238,35 +224,6 @@ SELECT id, nome, email, 'ONG' AS tipo_usuario FROM tbl_ongs;
 
 SELECT * FROM vw_usuarios;
  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
- 
-CALL inserir_usuario('Ana Paula', 'ana4@email.com', 'senhaAna', '111.222.333-44', '11912345678');
-CALL inserir_empresa('Super Tech', 'contato@supertech.com', 'senhaSuper', '12.345.67801-90', '11333221100');
-CALL inserir_ongs('Mundo Melhor', 'contato@mundomelhor.org', 'senhaMundo', '11988776655');
-
--- Consultar para conferir os dados
-SELECT * FROM tbl_cliente;
-SELECT * FROM tbl_empresa;
-SELECT * FROM tbl_ONGs;
-SELECT * FROM vw_usuarios;
-
--- Testar update para ver se data_modificacao atualiza
-UPDATE tbl_cliente SET telefone = '11999999999' WHERE id = 1;
-UPDATE tbl_empresa SET telefone = '11444444444' WHERE id = 1;
-UPDATE tbl_ONGs SET telefone = '11900001111' WHERE id = 1;
-
--- Verificar data_modificacao atualizada
-SELECT id, nome, telefone, data_modificacao FROM tbl_cliente WHERE nome = 'Ana Paula';
-SELECT id, nome, telefone, data_modificacao FROM tbl_empresa WHERE nome = 'Super Tech';
-SELECT id, nome, telefone, data_modificacao FROM tbl_ONGs WHERE nome = 'Mundo Melhor';
-
--- Testar delete via procedure
-CALL deletar_cliente((SELECT id FROM tbl_cliente WHERE nome = 'Ana Paula'));
-CALL deletar_empresa((SELECT id FROM tbl_empresa WHERE nome = 'Super Tech'));
-CALL deletar_ONGs((SELECT id FROM tbl_ONGs WHERE nome = 'Mundo Melhor'));
-
--- Conferir se deletou
-SELECT * FROM vw_usuarios;
-
 
 ------------------------------------------
 delimiter //
@@ -489,3 +446,57 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+create table tbl_pedidos (
+	id int auto_increment primary key,
+    id_usuario int not null,
+    id_alimento int not null,
+    quantidade int not null,
+    
+	constraint fk_pedidos_alimento foreign key (id_alimento) 
+    references tbl_alimentos(id),
+    
+    constraint fk_pedidos_usuario foreign key (id_usuario) 
+    references tbl_usuarios(id)
+);
+
+
+DELIMITER //
+CREATE PROCEDURE filtrar_pedidos_usuario (
+    IN id_usuario INT
+)
+BEGIN
+    SELECT 
+		p.id AS id_pedido, 
+        p.id_usuario AS id_usuario, 
+        p.id_alimento AS id_alimento, 
+        p.quantidade AS quantidade_pedido,
+        a.id AS id_alimento, 
+        a.nome AS nome_alimento, 
+        a.quantidade AS quantidade, 
+        a.peso AS peso,
+        a.id_tipo_peso AS id_tipo_peso, 
+        t.tipo AS tipoPeso,
+        a.data_de_validade AS data_de_validade, 
+        a.descricao AS descricao, 
+        a.imagem AS imagem, 
+        a.id_empresa AS id_empresa, 
+        e.nome AS nome_empresa, 
+        e.foto AS foto_empresa
+    FROM 
+       tbl_user_pedido p 
+    JOIN 
+        tbl_alimentos a ON p.id_alimento = a.id 
+    JOIN 
+        tbl_tipo_peso t ON t.id = a.id_tipo_peso
+    JOIN 
+        tbl_empresas e ON e.id = a.id_empresa
+    
+    WHERE 
+        p.id_usuario = id_usuario
+        
+	ORDER BY p.id desc;
+END //
+
+DELIMITER ; 
