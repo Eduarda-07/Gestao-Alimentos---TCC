@@ -11,10 +11,6 @@ const filtrosDAO = require('../../model/DAO/filtros')
 
 const categoriaDAO = require('../../model/DAO/categoria')
 const empresaDAO = require('../../model/DAO/empresa')
-const controllerEM = require('../empresas/controllerEmpresa')
-
-const controllerTipoPeso = require('../tipo de peso/controllerTipoPeso')
-const controllerAlimentoCat = require('../alimentos/controllerAlimentoCat');
 
 const buscarAlimentoCat = async function(id_categoria){
     try {
@@ -33,19 +29,20 @@ const buscarAlimentoCat = async function(id_categoria){
                     if(resultAlimentoCat.length > 0){
 
                         const alimentosRenomeados = resultAlimentoCat.map(item => ({
-                            id_alimento: item.f0, // Mapeado de 'a.id'
-                            nome_alimento: item.f1, // Mapeado de 'a.nome'
+                            id_alimento: item.f0, 
+                            nome_alimento: item.f1, 
                             quantidade: item.f2,
                             peso: item.f3,
                             id_tipo_peso: item.f4,
-                            data_de_validade: item.f5,
-                            descricao: item.f6,
-                            imagem: item.f7,
-                            id_empresa: item.f8,
-                            nome_empresa: item.f9,
-                            foto_empresa: item.f10,
-                            nome_categoria: item.f11 // O campo final, que é o nome da categoria
-                        }));
+                            tipo: item.f5,
+                            data_de_validade: item.f6,
+                            descricao: item.f7,
+                            imagem: item.f8,
+                            id_empresa: item.f9,
+                            nome_empresa: item.f10,
+                            foto_empresa: item.f11,
+                            nome_categoria: item.f12 
+                        }))
 
                         //Criando um JSON de retorno de dados para a API
                         dadosAlimentoCat.status = true
@@ -87,8 +84,8 @@ const buscarEmpresaAlimentos = async function(id_empresa){
                     if(resultAlimento.length > 0){
 
                         const alimentosRenomeados = resultAlimento.map(item => ({
-                            id_alimento: item.f0, // Mapeado de 'a.id'
-                            nome_alimento: item.f1, // Mapeado de 'a.nome'
+                            id_alimento: item.f0, 
+                            nome_alimento: item.f1, 
                             quantidade: item.f2,
                             peso: item.f3,
                             id_tipo_peso: item.f4,
@@ -99,8 +96,8 @@ const buscarEmpresaAlimentos = async function(id_empresa){
                             id_empresa: item.f9,
                             nome_empresa: item.f10,
                             foto_empresa: item.f11,
-                            nome_categoria: item.f12 // O campo final, que é o nome da categoria
-                        }));
+                            nome_categoria: item.f12 
+                        }))
 
                         //Criando um JSON de retorno de dados para a API
                         dadosAlimento.status = true
@@ -124,12 +121,6 @@ const buscarEmpresaAlimentos = async function(id_empresa){
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
-
-
-
-
-
-
 
 
 module.exports = {
