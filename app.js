@@ -151,7 +151,7 @@ app.get('/v1/mesa-plus/ong/:id', cors(), bodyParserJSON, async function (request
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
-     let id = request.params.id
+    let id = request.params.id
 
     //recebe do body da requisição os dados encaminhados
     let dadosBody = request.body
@@ -160,6 +160,21 @@ app.get('/v1/mesa-plus/ong/:id', cors(), bodyParserJSON, async function (request
 
     response.status(resultOng.status_code)
     response.json(resultOng)
+})
+
+
+app.put('/v1/mesa-plus/ong/:id', cors(), bodyParserJSON, async function (request, response){
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerOngs.atualizarOng(id, dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
 })
 
 ///////////////////////////////////////////////////////LOGIN///////////////////////////////////////////////////////////////////
@@ -232,7 +247,6 @@ app.put('/v1/mesa-plus/nova-senha', cors(), bodyParserJSON, async function (requ
     console.log(dadosBody);
     
 })
-
 
 //////////////////////////////////////////////////CATEGORIA//////////////////////////////////////////////////////////////
 

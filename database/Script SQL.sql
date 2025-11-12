@@ -425,3 +425,67 @@ END //
 
 DELIMITER ; 
 
+
+
+-- atualizar todos os tipos de usuario:
+
+delimiter //
+create trigger trg_update_ongs
+before update on tbl_ongs
+for each row
+begin
+    set new.data_modificacao = now();
+end;
+//
+delimiter ;
+
+
+DELIMITER //
+
+CREATE PROCEDURE atualizar_ong (
+    IN p_id INT,                  
+    IN p_nome VARCHAR(200),        
+    IN p_email VARCHAR(150),       
+    IN p_senha TEXT,               
+    IN p_telefone VARCHAR(20),     
+    IN p_foto TEXT                
+)
+BEGIN
+    DECLARE old_nome VARCHAR(200);
+    DECLARE old_email VARCHAR(150);
+    DECLARE old_senha TEXT;
+    DECLARE old_telefone VARCHAR(20);
+    DECLARE old_foto TEXT;
+    
+    -- 1. Tenta recuperar os dados antigos
+    SELECT 
+        nome, email, senha, telefone, foto
+    INTO
+        old_nome, old_email, old_senha, old_telefone, old_foto
+    FROM
+        tbl_ongs
+    WHERE
+        id = p_id;
+        
+    -- Se o parâmetro for NULL ou vazio, mantém o valor antigo.
+    SET p_nome = IF(p_nome IS NULL OR p_nome = '', old_nome, p_nome);
+    SET p_email = IF(p_email IS NULL OR p_email = '', old_email, p_email);
+    SET p_senha = IF(p_senha IS NULL OR p_senha = '', old_senha, p_senha);
+    SET p_telefone = IF(p_telefone IS NULL OR p_telefone = '', old_telefone, p_telefone);
+
+    SET p_foto = IF(p_foto IS NULL, old_foto, p_foto);
+
+
+    UPDATE tbl_ongs
+    SET
+        nome = p_nome,
+        email = p_email,
+        senha = p_senha,
+        telefone = p_telefone,
+        foto = p_foto
+    WHERE
+        id = p_id;
+        
+END //
+
+DELIMITER ;

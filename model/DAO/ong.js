@@ -59,9 +59,29 @@ const selectOngById = async function(id) {
     }
 }
 
+const updateOng = async function(id, ong) {
+    try {
+       const result = await prisma.$executeRaw `CALL atualizar_ong(${id},${ong.nome}, ${ong.email}, ${ong.senha}, ${ong.telefone}, ${ong.foto})`;
+        
+        if (result > 0) {
+            
+            return result
+           
+        }else{
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+
 
 // exportando funções
 module.exports = {
     insertOng,
-    selectOngById
+    selectOngById,
+    updateOng
 }
