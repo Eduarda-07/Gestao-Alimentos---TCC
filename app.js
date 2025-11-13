@@ -350,6 +350,16 @@ app.get('/v1/mesa-plus/alimentos', cors(), bodyParserJSON, async function (reque
     response.json(resultAlimentos)
 })
 
+app.get('/v1/mesa-plus/alimento/:id', cors(), bodyParserJSON, async function (request, response){
+
+    let id = request.params.id
+
+    let resultAlimentos = await controllerAlimentos.buscarAlimento(id)
+
+    response.status(resultAlimentos.status_code)
+    response.json(resultAlimentos)
+})
+
 //////////////////////////////////////////////////TIPO PESO//////////////////////////////////////////////////////////////
 
 app.post('/v1/mesa-plus/tipoPeso', cors(), bodyParserJSON, async function (request, response){

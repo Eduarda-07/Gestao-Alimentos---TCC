@@ -187,10 +187,89 @@ const listarAlimento = async function(){
     }
 }
 
+const buscarAlimento = async function(id){
+    
+    try {
 
+        if ( id === ""   ||   id === undefined || id === null  || isNaN(id)  || id <= 0 ) {
+            
+            return message.ERROR_REQUIRED_FIELD //400
+
+        } else {
+
+            let arrayAlimento = []
+            let dadosAlimento = {}
+
+            let result= await alimentoDAO.selecByIdAlimento(parseInt(id))
+
+            if(result != false || typeof(result) == 'object'){
+
+                if(result.length > 0){
+
+                    dadosAlimento.status = true
+                    dadosAlimento.status_code = 200
+                    for(const item of result){
+                        
+                        const idEmpresa = parseInt(item.id_empresa)
+                    
+                        let dadosEmpresa = await controllerEmpresa.buscarEmpresa(idEmpresa)
+
+                        if (dadosEmpresa && dadosEmpresa.empresa) {
+                            item.empresa = dadosEmpresa.empresa
+                            //Remover o id do JSON
+                            delete item.id_empresa  
+                        } else {
+                            // console.log(dadosEmpresa)
+                            delete item.id_empresa  
+                            item.empresa = null 
+                        }
+                        
+                        const idTipoPeso = parseInt(item.id_tipo_peso)
+                    
+                        let dadosTipo = await controllerTipoPeso.buscarTipoPeso(idTipoPeso)
+    
+                        if (dadosTipo && dadosTipo.tipo) {
+                            item.tipoPeso = dadosTipo.tipo
+                             //Remover o id do JSON
+                            delete item.id_tipo_peso  
+                        } else {
+                    
+                            delete item.id_tipo_peso  
+                            item.tipoPeso = null 
+                        }
+
+                        let dadosCategoria = await controllerAlimentoCat.buscarCatPorAlimento(item.id)
+                    
+
+                        // verificando se retorna array e se não é false
+                       if (dadosCategoria && dadosCategoria.status_code == 200 && Array.isArray(dadosCategoria.categoria)){
+                            item.categorias = dadosCategoria.categoria
+                        } else {
+                            item.categorias = []
+                        }
+                        arrayAlimento.push(item)
+     
+                    }
+                    dadosAlimento.alimento = arrayAlimento
+    
+                    return dadosAlimento
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+          
+            }else{
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
 
 module.exports = {
     inserirAlimento,
-    listarAlimento
+    listarAlimento, 
+    buscarAlimento
 }
 
