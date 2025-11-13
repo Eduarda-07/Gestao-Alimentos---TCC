@@ -20,6 +20,7 @@ const atualizarSenha = async function( dados,contentType){
         if(String(contentType).toLowerCase() == 'application/json'){
 
             if( 
+                // .trim() verifica se foi enviado um campo apenas com espaço
                 dados.tipo  == "" || dados.tipo  == undefined || dados.tipo  == null || dados.tipo.trim() === ''||
                 dados.senha == "" || dados.senha == undefined || dados.senha == null || dados.senha.trim() === ''||
                 (

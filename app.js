@@ -63,7 +63,7 @@ const controllerCategoria = require('./controller/categoria/controllerCategoria'
 const controllerAlimentos = require('./controller/alimentos/controllerAlimentos')
 const controllerTipoPeso = require('./controller/tipo de peso/controllerTipoPeso')
 const controllerFiltros = require('./controller/filtros/controllerFiltros')
-const controllerPedidosUser = require('./controller/usuarios/controllerUserPedido')
+const controllerPedidosUser = require('./controller/pedidos/controllerUserPedido')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -460,7 +460,7 @@ app.get('/v1/mesa-plus/empresaAlimento/:id', cors(), bodyParserJSON, async funct
 
 //////////////////////////////////////////////////PEDIDOS//////////////////////////////////////////////////////////////
 
-app.post('/v1/mesa-plus/pedido', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mesa-plus/pedidoUsuario', cors(), bodyParserJSON, async function (request, response){
    
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
@@ -474,16 +474,16 @@ app.post('/v1/mesa-plus/pedido', cors(), bodyParserJSON, async function (request
 
 })
 
-app.get('/v1/mesa-plus/pedido/:id', cors(), bodyParserJSON, async function (request, response){
+
+app.get('/v1/mesa-plus/pedido', cors(), bodyParserJSON, async function (request, response){
    
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
-     let id = request.params.id
+    let idUsuario = request.query.id_usuario;
+    let idOng = request.query.id_ong;
 
-    //recebe do body da requisição os dados encaminhados
-    let dadosBody = request.body
-    let result = await controllerPedidosUser.buscarAlimentosUsuario(id,dadosBody, contentType)
+    let result = await controllerPedidosUser.buscarPedidos(idUsuario, idOng, contentType)
 
     response.status(result.status_code)
     response.json(result)

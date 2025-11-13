@@ -500,3 +500,129 @@ BEGIN
 END //
 
 DELIMITER ; 
+
+
+
+CREATE TABLE tbl_user_pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NULL,
+    id_ong INT NULL,     
+    id_alimento INT NOT NULL,
+    quantidade INT NOT NULL,
+    
+    CONSTRAINT fk_pedidos_alimento FOREIGN KEY (id_alimento)  
+    REFERENCES tbl_alimentos(id),
+    
+    CONSTRAINT fk_pedidos_usuario FOREIGN KEY (id_usuario)  
+    REFERENCES tbl_usuarios(id),
+    
+    CONSTRAINT fk_pedidos_ong FOREIGN KEY (id_ong)  
+    REFERENCES tbl_ongs(id),
+    
+    CONSTRAINT chk_usuario_ou_ong CHECK (
+        (id_usuario IS NOT NULL AND id_ong IS NULL) OR 
+        (id_usuario IS NULL AND id_ong IS NOT NULL)
+    )
+);
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE filtrar_pedidos (
+    IN p_id_usuario INT,
+    IN p_id_ong INT
+)
+BEGIN
+    SELECT 
+        p.id AS id_pedido, 
+        p.id_usuario AS id_usuario, 
+        p.id_ong AS id_ong,      
+        p.id_alimento AS id_alimento, 
+        p.quantidade AS quantidade_pedido,
+        a.nome AS nome_alimento, 
+        a.quantidade AS quantidade, 
+        a.peso AS peso,
+        a.id_tipo_peso AS id_tipo_peso, 
+        t.tipo AS tipoPeso,
+        a.data_de_validade AS data_de_validade, 
+        a.descricao AS descricao, 
+        a.imagem AS imagem, 
+        a.id_empresa AS id_empresa, 
+        e.nome AS nome_empresa, 
+        e.foto AS foto_empresa
+    FROM 
+        tbl_user_pedidos p 
+    JOIN 
+        tbl_alimentos a ON p.id_alimento = a.id 
+    JOIN 
+        tbl_tipo_peso t ON t.id = a.id_tipo_peso
+    JOIN 
+        tbl_empresas e ON e.id = a.id_empresa
+        
+    WHERE 
+        (p.id_usuario = p_id_usuario OR p_id_usuario IS NULL) 
+        AND (p.id_ong = p_id_ong OR p_id_ong IS NULL)
+        
+    ORDER BY p.id DESC;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE inserir_pedido_usuario (
+    IN p_id_usuario INT,    
+    IN p_id_alimento INT,   
+    IN p_quantidade INT     
+)
+BEGIN
+    INSERT INTO tbl_user_pedidos (
+        id_usuario,
+        id_ong,           
+        id_alimento,
+        quantidade
+    )
+    VALUES (
+        p_id_usuario,
+        NULL,              
+        p_id_alimento,
+        p_quantidade
+    );
+END //
+
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE inserir_pedido_ong (
+    IN p_id_ong INT,        
+    IN p_id_alimento INT,   
+    IN p_quantidade INT     
+)
+BEGIN
+    INSERT INTO tbl_user_pedidos (
+        id_usuario,      
+        id_ong,
+        id_alimento,
+        quantidade
+    )
+    VALUES (
+        NULL,              
+        p_id_ong,
+        p_id_alimento,
+        p_quantidade
+    );
+END //
+
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE deletar_pedido_usuario (
+    IN p_id_pedido INT 
+)
+BEGIN
+    DELETE FROM tbl_user_pedidos
+    WHERE id = p_id_pedido;
+
+END //
+
+DELIMITER ;

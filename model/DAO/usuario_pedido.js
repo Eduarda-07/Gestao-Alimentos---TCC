@@ -35,6 +35,32 @@ const insertUserPedido = async function(userPedido){
   }
 }
 
+const insertOngPedido = async function(userPedido){
+  try {
+
+      const result = await prisma.$executeRaw `CALL inserir_pedido_ong(${userPedido.id_ong}, ${userPedido.id_alimento}, ${userPedido.quantidade})`
+
+       if (result === 1) { 
+            let lastIdResult = await prisma.$queryRawUnsafe(`SELECT LAST_INSERT_ID() AS id`)
+
+            let idGerado = lastIdResult[0].id
+
+            return {
+                id: Number(idGerado), 
+                usuario: userPedido.id_ong,
+                alimento: userPedido.id_alimento,
+                quantidade: userPedido.quantidade
+            }
+        } else
+          return false
+  } catch (error) {
+      console.log(error);
+      
+      return false
+  }
+}
+
+
 
 const deletePedidoById = async function(id_pedido){
   try {
@@ -51,9 +77,9 @@ const deletePedidoById = async function(id_pedido){
 }
 
 
-const selectPedidoUser = async function(idUsuario){
+const selectPedidoUser = async function(id_usuario, id_ong){
  try {
-      let result = await prisma.$queryRaw`CALL filtrar_pedidos_usuario(${idUsuario})`
+      let result = await prisma.$queryRaw`CALL filtrar_pedidos(${id_usuario}, ${id_ong} )`
       
 
     if (result && result.length > 0)
@@ -92,5 +118,6 @@ module.exports = {
     insertUserPedido,
     selectPedidoUser,
     deletePedidoById,
-    selectPedidoById
+    selectPedidoById,
+    insertOngPedido
 } 
