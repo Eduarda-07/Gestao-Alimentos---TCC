@@ -1,6 +1,6 @@
 /****************************************************************************************************
- * Objetivo: criar a comunicação com o banco de dados, para fazer o CROUD da tbl_user_pedidos
- * Data: 12/11/2025
+ * Objetivo: criar a comunicação com o banco de dados, para fazer o CROUD de favoritos
+ * Data: 13/11/2025
  * Autor: Eduara
  * Versão: 1.0
  ***************************************************************************************************/
@@ -9,7 +9,7 @@
 const message = require('../../modulo/config.js')
 
 
-const userPedidoDAO = require('../../model/DAO/usuario_pedido.js')
+const userFavDAO = require('../../model/DAO/usuario_favoritos')
 
 
 const inserirUserPedido = async function(userPedido, contentType){
@@ -31,7 +31,7 @@ const inserirUserPedido = async function(userPedido, contentType){
 
                     if (userPedido.id_usuario) {
                         
-                        let resultUser = await userPedidoDAO.insertUserPedido(userPedido)
+                        let resultUser = await userFavDAO.insertUserPedido(userPedido)
 
                         if(resultUser){
                             
@@ -47,7 +47,7 @@ const inserirUserPedido = async function(userPedido, contentType){
 
                     } else if (userPedido.id_ong){
                         
-                        let resultOng = await userPedidoDAO.insertOngPedido(userPedido)
+                        let resultOng = await userFavDAO.insertOngPedido(userPedido)
 
                         if(resultOng){
                             let dados = {
@@ -83,7 +83,7 @@ const buscarPedidos = async function(id_usuario, id_ong){
             let dadosAlimento = {}
           
     
-            let resultAlimento = await userPedidoDAO.selectPedidoUser(id_usuario, id_ong)
+            let resultAlimento = await userFavDAO.selectPedidoUser(id_usuario, id_ong)
 
              if(resultAlimento != false || typeof(resultAlimento) == 'object'){
                 if(resultAlimento.length > 0){
@@ -136,11 +136,11 @@ const deletarPedidoById = async function(id_pedido){
                     return message.ERROR_REQUIRED_FIELD //400
                 }else{
 
-                    let resultPedido = await userPedidoDAO.selectPedidoById(id_pedido)
+                    let resultPedido = await userFavDAO.selectPedidoById(id_pedido)
 
                     if (resultPedido) {
 
-                        let result = await userPedidoDAO.deletePedidoById(id_pedido)
+                        let result = await userFavDAO.deletePedidoById(id_pedido)
 
                         if(result)
                             return message.SUCCESS_DELETED_ITEM
