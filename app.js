@@ -432,7 +432,7 @@ app.get('/v1/mesa-plus/filtroCat/:id', cors(), bodyParserJSON, async function (r
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
-     let id = request.params.id
+    let id = request.params.id
 
     //recebe do body da requisição os dados encaminhados
     let dadosBody = request.body
@@ -448,11 +448,25 @@ app.get('/v1/mesa-plus/empresaAlimento/:id', cors(), bodyParserJSON, async funct
     //recebe o content type da requisição
     let contentType = request.headers['content-type']
 
-     let id = request.params.id
+    let id = request.params.id
 
     //recebe do body da requisição os dados encaminhados
     let dadosBody = request.body
     let result = await controllerFiltros.buscarEmpresaAlimentos(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/filtroData', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let { data } = request.body; 
+    let result = await controllerFiltros.buscarAlimentosData(data, contentType)
 
     response.status(result.status_code)
     response.json(result)

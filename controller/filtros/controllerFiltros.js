@@ -122,8 +122,56 @@ const buscarEmpresaAlimentos = async function(id_empresa){
     }
 }
 
+const buscarAlimentosData = async function(data){
+    try {
+        if(data == '' || data == undefined || data == null  || data.length > 10 ){
+            return message.ERROR_REQUIRED_FIELD //400
+        }else{
+          
+                let dadosAlimento = {}
+
+                let resultAlimento = await filtrosDAO.selectAlimentoData(data)
+            
+                if(resultAlimento != false || typeof(resultAlimento) == 'object'){
+                    if(resultAlimento.length > 0){
+
+                        const alimentosRenomeados = resultAlimento.map(item => ({
+                            id_alimento: item.f0, 
+                            nome_alimento: item.f1, 
+                            quantidade: item.f2,
+                            peso: item.f3,
+                            id_tipo_peso: item.f4,
+                            tipo: item.f5,
+                            data_de_validade: item.f6,
+                            descricao: item.f7,
+                            imagem: item.f8,
+                            id_empresa: item.f9,
+                            nome_empresa: item.f10,
+                            foto_empresa: item.f11 
+                        }))
+
+                        //Criando um JSON de retorno de dados para a API
+                        dadosAlimento.status = true
+                        dadosAlimento.status_code = 200
+                        dadosAlimento.resultFiltro = alimentosRenomeados
+
+                        return dadosAlimento //200
+                    }else{
+                        return message.ERROR_NOT_FOUND //404
+                    }
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL //404
+                }
+        }
+
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
 
 module.exports = {
     buscarAlimentoCat,
-    buscarEmpresaAlimentos
+    buscarEmpresaAlimentos,
+    buscarAlimentosData
 }

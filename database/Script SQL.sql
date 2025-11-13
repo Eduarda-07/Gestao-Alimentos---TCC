@@ -227,31 +227,6 @@ end;
 //
 delimiter ;
 
--- inserir alimento
-delimiter //
-create procedure inserir_alimento(
-    in d_nome varchar(150),
-    in d_quantidade int,
-    in d_peso decimal(5,2),
-    in d_id_tipo_peso int,
-    in d_data_de_validade date,
-    in d_descricao text,
-    in d_imagem text,
-    in d_id_empresa int
-)
-begin
-    declare data_geral date;
-
-    set data_geral = str_to_date(d_data, '%Y/%m/%d');
-    if data_geral is null then
-        set data_geral = str_to_date(d_data, '%d/%m/%Y');
-    end if;
-
-    insert into tbl_alimentos(nome, quantidade, peso,  d_id_tipo_peso, data_de_validade, descricao, imagem, id_empresa, id_tipo_peso)
-    values (d_nome, d_quantidade, d_peso, data_geral, d_descricao, d_imagem, d_id_empresa);
-end;
-//
-delimiter ;
 
 delimiter //
 create procedure inserir_tipo_peso(
@@ -288,15 +263,6 @@ end;
 //
 delimiter ;
 
-
-delimiter //
-create procedure deletar_alimento(in d_id_alimentos int)
-begin
-    delete from tbl_alimento_categoria where id_alimento = d_id_alimento;
-    delete from tbl_alimentos where id = d_id_alimentos;
-end;
-//
-delimiter ;
 
 delimiter //
 create procedure deletar_categoria(in d_id_categorias int)
@@ -394,15 +360,48 @@ values
 
 DELIMITER //
 CREATE PROCEDURE filtrar_alimentos_por_data (
-    IN data_validade_filtro DATE
+    IN d_data varchar(50)
 )
 BEGIN
+
+	DECLARE data_geral DATE;
+
+    -- Tenta o primeiro formato (DD-MM-YYYY)
+    SET data_geral = STR_TO_DATE(d_data, '%d-%m-%Y');
+
+    -- Tenta o segundo formato (DD/MM/YYYY)
+    IF data_geral IS NULL THEN
+        SET data_geral = STR_TO_DATE(d_data, '%d/%m/%Y');
+    END IF;
+
+    -- Tenta o terceiro formato (DD-MM-YYYYTHH:MM:SS)
+    IF data_geral IS NULL THEN
+        SET data_geral = STR_TO_DATE(d_data, '%d-%m-%YT%H:%i:%s');
+    END IF;
+
+    -- Tenta o quarto formato (DD/MM/YYYYTHH:MM:SS)
+    IF data_geral IS NULL THEN
+        SET data_geral = STR_TO_DATE(d_data, '%d/%m/%YT%H:%i:%s');
+    END IF;
+
+    -- Tenta o formato ISO (YYYY-MM-DD), que é o mais comum no JS/Prisma
+    IF data_geral IS NULL THEN
+        SET data_geral = STR_TO_DATE(d_data, '%Y-%m-%d');
+    END IF;
+
+    -- Se nenhuma conversão funcionar, sinaliza o erro
+    IF data_geral IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Formato de data inválido! Use DD-MM-YYYY, DD/MM/YYYY ou formato ISO (YYYY-MM-DD).';
+    END IF;
+
     SELECT 
         a.id AS id_alimento, 
         a.nome AS nome_alimento, 
         a.quantidade, 
         a.peso,
         a.id_tipo_peso, 
+	t.tipo AS tipoPeso,
         a.data_de_validade, 
         a.descricao, 
         a.imagem, 
@@ -413,8 +412,11 @@ BEGIN
         tbl_alimentos a
     JOIN 
         tbl_empresas e ON e.id = a.id_empresa
+    JOIN 
+        tbl_tipo_peso t ON t.id = a.id_tipo_peso
+    
     WHERE 
-        a.data_de_validade = data_validade_filtro
+        a.data_de_validade = data_geral
     ORDER BY a.data_de_validade ASC;
 END //
 DELIMITER ;
@@ -436,7 +438,8 @@ BEGIN
         a.imagem AS imagem, 
         a.id_empresa AS id_empresa, 
         e.nome AS nome_empresa, 
-        e.foto AS foto_empresa
+        e.foto AS foto_empresa,
+        c.nome AS nome_categoria
     FROM 
         tbl_alimentos a
     
@@ -448,6 +451,12 @@ BEGIN
 	-- 3. JOIN com a tabela de tipoPeso (para obter os detalhes)
     JOIN 
         tbl_tipo_peso t ON t.id = a.id_tipo_peso
+        
+	LEFT JOIN 
+		tbl_alimento_categoria ac ON ac.id_alimento = a.id
+        
+	LEFT JOIN 
+		tbl_categoria c ON c.id = ac.id_categoria
     
     WHERE 
         e.id = id_empresa_filtro
@@ -455,7 +464,7 @@ BEGIN
 	ORDER BY a.id desc;
 END //
 
-DELIMITER ; 
+DELIMITER ;
 
 
 DELIMITER //
@@ -595,3 +604,15 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+delimiter //
+create procedure deletar_alimento(
+	in d_id_alimentos int
+)
+begin
+    delete from tbl_alimento_categoria where id_alimento = d_id_alimentos;
+	delete from tbl_user_pedidos where id_alimento = d_id_alimentos;
+    delete from tbl_alimentos where id = d_id_alimentos;
+end;
+//
+delimiter ;

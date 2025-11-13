@@ -132,11 +132,8 @@ const buscarPedidos = async function(id_usuario, id_ong){
         }else{
 
             let dadosAlimento = {}
-            if (id) {
-                
-            } else {
-                
-            }
+          
+    
             let resultAlimento = await userPedidoDAO.selectPedidoUser(id_usuario, id_ong)
 
              if(resultAlimento != false || typeof(resultAlimento) == 'object'){
@@ -176,6 +173,7 @@ const buscarPedidos = async function(id_usuario, id_ong){
         }
 
     } catch (error) {
+        console.log(error);
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }

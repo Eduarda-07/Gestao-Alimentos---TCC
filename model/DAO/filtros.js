@@ -48,8 +48,27 @@ const selectAlimentoEmpresa = async function(id_empresa){
     }
 }
 
+const selectAlimentoData = async function(data){
+    try{
+
+        let result = await prisma.$queryRaw` CALL filtrar_alimentos_por_data(${data});`
+
+
+        if(result){
+            return result
+        } else{
+            return false
+        }
+        
+    }catch(error){
+        console.log(error)
+        return false
+    }
+}
+
 
 module.exports = {
     selectAlimentoCat,
-    selectAlimentoEmpresa
+    selectAlimentoEmpresa,
+    selectAlimentoData
 }
