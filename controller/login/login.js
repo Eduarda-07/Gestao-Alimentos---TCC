@@ -43,7 +43,7 @@ const loginUsuario = async function(usuario) {
                 if (conferindoSenha){
                     dadosUsuarioLogado.status = true
                     dadosUsuarioLogado.status_code = 200
-                    dadosUsuarioLogado.message = message.SUCCESS_CREATED_ITEM.message
+                    dadosUsuarioLogado.message = message.SUCCESS_LOGIN.message
                     dadosUsuarioLogado.usuario = {
                         id: usuarioUnico.id,
                         nome: usuarioUnico.nome,

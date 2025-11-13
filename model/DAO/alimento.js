@@ -15,29 +15,8 @@ const prisma = new PrismaClient()
 // função para inserir um novo filme
 const insertAlimento = async function(alimento){
     try{
-        let sql = `
-                insert into tbl_alimentos(
-                    nome,
-                    quantidade,
-                    peso,
-                    id_tipo_peso,
-                    data_de_validade,
-                    descricao,
-                    imagem,
-                    id_empresa
-                )
-                values(
-                    '${alimento.nome}',
-                    '${alimento.quantidade}',
-                    '${alimento.peso}',
-                    '${alimento.id_tipo_peso}',
-                    '${alimento.data_de_validade}',
-                    '${alimento.descricao}',
-                    '${alimento.imagem}',
-                    ${alimento.id_empresa}
-                )`
-
-        let result = await prisma.$executeRawUnsafe(sql)
+        
+        let result = await prisma.$executeRaw`CALL inserir_alimento(${alimento.nome}, ${alimento.quantidade}, ${alimento.peso}, ${alimento.data_de_validade}, ${alimento.descricao}, ${alimento.imagem}, ${alimento.id_empresa}, ${alimento.id_tipo_peso})`
 
        if (result === 1) { 
             let lastIdResult = await prisma.$queryRawUnsafe(`SELECT LAST_INSERT_ID() AS id`)

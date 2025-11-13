@@ -55,6 +55,8 @@ const selectOngById = async function(id) {
             return null 
         }
     } catch (error) {
+        console.log(error);
+        
         return false
     }
 }

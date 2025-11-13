@@ -33,18 +33,31 @@ const inserirUserPedido = async function(userPedido, contentType){
                         
                         let resultUser = await userPedidoDAO.insertUserPedido(userPedido)
 
-                        if(resultUser)
-                            return message.SUCCESS_CREATED_ITEM //201
-                        else
+                        if(resultUser){
+                            
+                           let dados = {
+                                        status: true,
+                                        status_code: message.SUCCESS_CREATED_ITEM.status_code,
+                                        message: message.SUCCESS_CREATED_ITEM.message,
+                                        pedido: resultUser
+                                        }
+                            return dados
+                        }else
                             return message.ERROR_INTERNAL_SERVER_MODEL //500
 
                     } else if (userPedido.id_ong){
                         
                         let resultOng = await userPedidoDAO.insertOngPedido(userPedido)
 
-                        if(resultOng)
-                            return message.SUCCESS_CREATED_ITEM //201
-                        else
+                        if(resultOng){
+                            let dados = {
+                                status: true,
+                                status_code: message.SUCCESS_CREATED_ITEM.status_code,
+                                message: message.SUCCESS_CREATED_ITEM.message,
+                                pedido: resultOng
+                                }
+                            return dados
+                        }else
                             return message.ERROR_INTERNAL_SERVER_MODEL //500
 
                     }
@@ -119,6 +132,11 @@ const buscarPedidos = async function(id_usuario, id_ong){
         }else{
 
             let dadosAlimento = {}
+            if (id) {
+                
+            } else {
+                
+            }
             let resultAlimento = await userPedidoDAO.selectPedidoUser(id_usuario, id_ong)
 
              if(resultAlimento != false || typeof(resultAlimento) == 'object'){

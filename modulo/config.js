@@ -39,6 +39,8 @@ const SUCCESS_CODE_VERIFIED = {status: true, status_code: 200, message: "Código
 
 const SUCCESS_CODE_SENT = {status: true, status_code: 200, message: "Código de recuperação enviado com sucesso!!"}
 
+const SUCCESS_LOGIN = {status: true, status_code: 200, message: "Logado com sucesso!!"}
+
 
 module.exports = {
     ERROR_REQUIRED_FIELD,
@@ -54,5 +56,6 @@ module.exports = {
     SUCCESS_DELETED_ITEM,
     SUCCESS_UPDATED_ITEM,
     SUCCESS_CODE_VERIFIED,
-    SUCCESS_CODE_SENT
+    SUCCESS_CODE_SENT,
+    SUCCESS_LOGIN
 }

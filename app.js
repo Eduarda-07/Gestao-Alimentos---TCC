@@ -172,6 +172,7 @@ app.put('/v1/mesa-plus/ong/:id', cors(), bodyParserJSON, async function (request
 
     //recebe do body da requisição os dados encaminhados
     let dadosBody = request.body
+    
     let result = await controllerOngs.atualizarOng(id, dadosBody, contentType)
 
     response.status(result.status_code)
