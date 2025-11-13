@@ -41,33 +41,6 @@ const inserirUserPedido = async function(userPedido, contentType){
 }
 
 
-const buscarUserPedido = async function(idUserPedido){
-    try {
-        if(idUserPedido == '' || idUserPedido == undefined || idUserPedido == null || isNaN(idUserPedido) || idUserPedido <=0){
-            return message.ERROR_REQUIRED_FIELD //400
-        }else{
-            let dadosUserPedido = {} 
-
-            let result = await userPedidoDAO.selectPedidoByIdUser(parseInt(idUserPedido))
-            
-            if(result && Array.isArray(result) && result.length > 0){
-               
-                dadosUserPedido.status = true
-                dadosUserPedido.status_code = 200
-                dadosUserPedido.pedido = result 
-
-                return dadosUserPedido // 200
-            }else{
-           
-                return message.ERROR_NOT_FOUND // 404
-            }
-        }
-
-    } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
-    }
-}
-
 const buscarAlimentosUsuario = async function(id_usuario){
     try {
         if(id_usuario == '' || id_usuario == undefined || id_usuario == null || isNaN(id_usuario) || id_usuario <=0){
@@ -76,7 +49,7 @@ const buscarAlimentosUsuario = async function(id_usuario){
 
             let dadosAlimento = {}
 
-            let resultAlimento = await userPedidoDAO.selectAlimentoUsuario(parseInt(id_usuario))
+            let resultAlimento = await userPedidoDAO.selectPedidoUser(parseInt(id_usuario))
             
             if(resultAlimento != false || typeof(resultAlimento) == 'object'){
                 if(resultAlimento.length > 0){
@@ -118,8 +91,37 @@ const buscarAlimentosUsuario = async function(id_usuario){
     }
 }
 
+const deletarPedidoById = async function(id_pedido){
+    try {
+        if (
+                    id_pedido    == '' || id_pedido   == undefined  || id_pedido   == null || isNaN(id_pedido)  || id_pedido  <=0 
+                )
+                {
+                    return message.ERROR_REQUIRED_FIELD //400
+                }else{
+
+                    let resultPedido = await userPedidoDAO.selectPedidoById(id_pedido)
+
+                    if (resultPedido) {
+
+                        let result = await userPedidoDAO.deletePedidoById(id_pedido)
+
+                        if(result)
+                            return message.SUCCESS_DELETED_ITEM
+                        else
+                            return message.ERROR_INTERNAL_SERVER_MODEL //500
+                        
+                    } else {
+                         return message.ERROR_NOT_FOUND
+                    }
+                }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
 module.exports = {
     inserirUserPedido,
-    buscarUserPedido,
-    buscarAlimentosUsuario
+    buscarAlimentosUsuario,
+    deletarPedidoById
 }

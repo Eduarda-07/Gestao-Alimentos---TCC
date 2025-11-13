@@ -63,6 +63,7 @@ const controllerCategoria = require('./controller/categoria/controllerCategoria'
 const controllerAlimentos = require('./controller/alimentos/controllerAlimentos')
 const controllerTipoPeso = require('./controller/tipo de peso/controllerTipoPeso')
 const controllerFiltros = require('./controller/filtros/controllerFiltros')
+const controllerPedidosUser = require('./controller/usuarios/controllerUserPedido')
 
 ////////////////////////////////////////////////////USUÁRIOS/////////////////////////////////////////////////////////////////////
 
@@ -456,6 +457,55 @@ app.get('/v1/mesa-plus/empresaAlimento/:id', cors(), bodyParserJSON, async funct
     response.json(result)
 
 })
+
+//////////////////////////////////////////////////PEDIDOS//////////////////////////////////////////////////////////////
+
+app.post('/v1/mesa-plus/pedido', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerPedidosUser.inserirUserPedido(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.get('/v1/mesa-plus/pedido/:id', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerPedidosUser.buscarAlimentosUsuario(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
+app.delete('/v1/mesa-plus/pedido/:id', cors(), bodyParserJSON, async function (request, response){
+   
+    //recebe o content type da requisição
+    let contentType = request.headers['content-type']
+
+     let id = request.params.id
+
+    //recebe do body da requisição os dados encaminhados
+    let dadosBody = request.body
+    let result = await controllerPedidosUser.deletarPedidoById(id,dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+
+})
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.listen('8080', function(){
     console.log('API funcionando e aguardadndo requisições... Porta: 8080')
