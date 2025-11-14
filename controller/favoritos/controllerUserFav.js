@@ -12,49 +12,43 @@ const message = require('../../modulo/config.js')
 const userFavDAO = require('../../model/DAO/usuario_favoritos')
 
 
-const inserirUserPedido = async function(userPedido, contentType){
+const inserirUserFav = async function(userFav, contentType){
     try {
         if(String(contentType).toLowerCase() == 'application/json')
         {
             if( 
-                userPedido.id_alimento == "" || userPedido.id_alimento == undefined || userPedido.id_alimento == null || isNaN(userPedido.id_alimento) || userPedido.id_alimento <= 0 ||
-                userPedido.quantidade  == "" || userPedido.quantidade  == undefined || userPedido.quantidade  == null || isNaN(userPedido.quantidade)  || userPedido.quantidade  <= 0 ||
-                (
-                    (userPedido.id_usuario == "" || userPedido.id_usuario == undefined || userPedido.id_usuario == null || isNaN(userPedido.id_usuario) || userPedido.id_usuario <= 0 )  && 
-                    (userPedido.id_ong     == "" || userPedido.id_ong     == undefined || userPedido.id_ong     == null || isNaN(userPedido.id_ong)     || userPedido.id_ong     <= 0 )
-                )
+                userFav.id_empresa  == "" || userFav.id_empresa == undefined || userFav.id_empresa == null || isNaN(userFav.id_empresa) || userFav.id_empresa <= 0 ||
+                (userFav.id_usuario == "" || userFav.id_usuario == undefined || userFav.id_usuario == null || isNaN(userFav.id_usuario) || userFav.id_usuario <= 0 )  && 
+                (userFav.id_ong     == "" || userFav.id_ong     == undefined || userFav.id_ong     == null || isNaN(userFav.id_ong)     || userFav.id_ong     <= 0 )
+            ){
+                return message.ERROR_REQUIRED_FIELD //400
+            }else{
+                if (userFav.id_usuario) {
+                    
+                    let resultUser = await userFavDAO.insertUserFav(userFav)
 
-            )
-                {
-                    return message.ERROR_REQUIRED_FIELD //400
-                }else{
-
-                    if (userPedido.id_usuario) {
-                        
-                        let resultUser = await userFavDAO.insertUserPedido(userPedido)
-
-                        if(resultUser){
+                    if(resultUser){
                             
-                           let dados = {
-                                        status: true,
-                                        status_code: message.SUCCESS_CREATED_ITEM.status_code,
-                                        message: message.SUCCESS_CREATED_ITEM.message,
-                                        pedido: resultUser
-                                        }
-                            return dados
-                        }else
-                            return message.ERROR_INTERNAL_SERVER_MODEL //500
+                        let dados = {
+                            status: true,
+                            status_code: message.SUCCESS_CREATED_ITEM.status_code,
+                            message: message.SUCCESS_CREATED_ITEM.message,
+                            favorito: resultUser
+                        }
+                        return dados
+                    }else
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
 
-                    } else if (userPedido.id_ong){
+                    } else if (userFav.id_ong){
                         
-                        let resultOng = await userFavDAO.insertOngPedido(userPedido)
+                        let resultOng = await userFavDAO.insertOngFav(userFav)
 
                         if(resultOng){
                             let dados = {
                                 status: true,
                                 status_code: message.SUCCESS_CREATED_ITEM.status_code,
                                 message: message.SUCCESS_CREATED_ITEM.message,
-                                pedido: resultOng
+                                favorito: resultOng
                                 }
                             return dados
                         }else
@@ -71,7 +65,7 @@ const inserirUserPedido = async function(userPedido, contentType){
     }
 }
 
-const buscarPedidos = async function(id_usuario, id_ong){ 
+const buscarFavoritos = async function(id_usuario, id_ong){ 
     try {
         if(
             (id_usuario == '' || id_usuario == undefined || id_usuario == null || isNaN(id_usuario) || id_usuario <=0) &&
@@ -80,39 +74,32 @@ const buscarPedidos = async function(id_usuario, id_ong){
             return message.ERROR_REQUIRED_FIELD //400
         }else{
 
-            let dadosAlimento = {}
+            let dadosEmpresa = {}
           
     
-            let resultAlimento = await userFavDAO.selectPedidoUser(id_usuario, id_ong)
+            let resultFavorito = await userFavDAO.selectFavoritoUser(id_usuario, id_ong)
 
-             if(resultAlimento != false || typeof(resultAlimento) == 'object'){
-                if(resultAlimento.length > 0){
+             if(resultFavorito != false || typeof(resultFavorito) == 'object'){
+                if(resultFavorito.length > 0){
 
-                    const alimentosRenomeados = resultAlimento.map(item => ({
-                        id_pedido: item.f0,
+                    const favoritosRenomeados = resultFavorito.map(item => ({
+                        id_favorito: item.f0,
                         id_usuario: item.f1,
                         id_ong: item.f2,
-                        id_alimento: item.f3, 
-                        quantidade_pedido: item.f4,
-                        nome_alimento: item.f5, 
-                        quantidade: item.f6,
-                        peso: item.f7,
-                        id_tipo_peso: item.f8,
-                        tipo: item.f9,
-                        data_de_validade: item.f10,
-                        descricao: item.f11,
-                        imagem: item.f12,
-                        id_empresa: item.f13,
-                        nome_empresa: item.f14,
-                        foto_empresa: item.f15
+                        id_empresa: item.f3, 
+                        nome: item.f4,
+                        email: item.f5, 
+                        cnpj_mei: item.f6,
+                        telefone: item.f7,
+                        foto: item.f8
                     }))
 
                         //Criando um JSON de retorno de dados para a API
-                        dadosAlimento.status = true
-                        dadosAlimento.status_code = 200
-                        dadosAlimento.result = alimentosRenomeados
+                        dadosEmpresa.status = true
+                        dadosEmpresa.status_code = 200
+                        dadosEmpresa.result = favoritosRenomeados
 
-                        return dadosAlimento //200
+                        return dadosEmpresa //200
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -127,37 +114,37 @@ const buscarPedidos = async function(id_usuario, id_ong){
     }
 }
 
-const deletarPedidoById = async function(id_pedido){
+const deletarFavoritoById = async function(id_favorito){
     try {
-        if (
-                    id_pedido    == '' || id_pedido   == undefined  || id_pedido   == null || isNaN(id_pedido)  || id_pedido  <=0 
-                )
-                {
-                    return message.ERROR_REQUIRED_FIELD //400
-                }else{
+        if(
+            id_favorito    == '' || id_favorito   == undefined  || id_favorito   == null || isNaN(id_favorito)  || id_favorito  <=0 
+        ){
+            return message.ERROR_REQUIRED_FIELD //400
+        }else{
+        
+            let resultPedido = await userFavDAO.selectPedidoById(id_favorito)
 
-                    let resultPedido = await userFavDAO.selectPedidoById(id_pedido)
+            if (resultPedido) {
 
-                    if (resultPedido) {
+                let result = await userFavDAO.deleteFavoritoById(id_favorito)
 
-                        let result = await userFavDAO.deletePedidoById(id_pedido)
-
-                        if(result)
-                            return message.SUCCESS_DELETED_ITEM
-                        else
-                            return message.ERROR_INTERNAL_SERVER_MODEL //500
+                if(result)
+                    return message.SUCCESS_DELETED_ITEM
+                else
+                    return message.ERROR_INTERNAL_SERVER_MODEL //500
                         
-                    } else {
-                         return message.ERROR_NOT_FOUND
-                    }
-                }
+            } else {
+                return message.ERROR_NOT_FOUND
+            }
+            
+        }
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
 
 module.exports = {
-    inserirUserPedido,
+    inserirUserFav,
     buscarPedidos,
     deletarPedidoById
 }
